@@ -37,13 +37,13 @@ def fetch_and_insert_data():
                 }
                 insert_countries_data_to_db(country_data, index)
 
-                continents = country.get('continents', [])
-                id_continent = insert_country_data_one_param(continents, '''INSERT OR IGNORE INTO Continents (continent) VALUES (?)''')
+                capital = country.get('capital', {'noCapital': 'No Capital Found'})
+                id_capital = insert_country_data_capital(capital)
 
                # capitals = country.get('capital', [])
                 #id_capital = insert_country_data_one_param(capitals, '''INSERT INTO Capitals (capital) VALUES (?)''')
 
-                languages = country.get('languages', [])
+                languages = country.get('languages', {'noLang': 'No Language Found'})
                 id_language = insert_country_data_language(languages)
 
                 #borders = country.get('borders', [])
@@ -52,17 +52,17 @@ def fetch_and_insert_data():
                 #currencies = country.get('currencies', [])
                 #id_currency = insert_country_data_currencies(currencies)
                 #insert_into_zwischentabelle(index,id_border, '''INSERT INTO Countries_Borders (id_boarder,id_country) VALUES (?,?)''')
-                #insert_into_zwischentabelle(index, id_capital,'''INSERT INTO Countries_Capitals (id_capital,id_country) VALUES (?,?)''')
+                insert_into_zwischentabelle(index, id_capital,'''INSERT INTO Countries_Capitals (id_country,id_capital) VALUES (?,?)''')
                 #insert_into_zwischentabelle(index, id_currency,'''INSERT INTO Countries_Currencies (id_currency,id_country) VALUES (?,?)''')
                 insert_into_zwischentabelle(index, id_language,'''INSERT INTO Countries_Languages (id_country,id_language) VALUES (?,?)''')
-                #insert_into_zwischentabelle(index, id_continent,'''INSERT INTO Countries_Continents (id_continent,id_country) VALUES (?,?)''')
+                #insert_into_zwischentabelle(index, id_capital,'''INSERT INTO Countries_Continents (id_country,id_continent) VALUES (?,?)''')
                 index += 1
             except Exception as e:
-                print("Error in loading:", str(e))
+                print("Error in loading:", str(e),)
                 continue
     else:
         print("Error in fetching data!")
 
 fetch_and_insert_data()
 
-print_country_data_language()
+print_country_data_capital()

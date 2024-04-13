@@ -216,25 +216,23 @@ def insert_country_data_one_param(data, query):
         conn.close()
     return list_id
 
+########################################################################################
+
 def insert_country_data_language(data):
     """
-    Insert country data into the database using a single parameterized query.
-
+    Inserts language data into the 'Languages' table in the 'countries.db' database.
+    
     Args:
-        data (list): A list of data to be inserted into the database.
-
+        data (dict): A dictionary containing language data.
+        
     Returns:
-        list: A list of inserted language IDs.
-
-    Raises:
-        sqlite3.Error: If there is an error executing the query.
-
+        list: A list of language IDs that were inserted or already existed in the database.
     """
     conn = sqlite3.connect("database/countries.db")
     c = conn.cursor()
     list_id = []
     try:
-        for _,language in data.items():
+        for _, language in data.items():
             language_query = "SELECT id_language FROM Languages WHERE language = ?"
             c.execute(language_query, (language,))
             result = c.fetchone()
@@ -253,6 +251,44 @@ def insert_country_data_language(data):
         conn.close()
     return list_id
 
+def insert_country_data_capital(capitals):
+    """
+    Inserts country data into the database and returns a list of capital IDs.
+
+    Args:
+        data (dict): A dictionary containing country data with capital names as values.
+
+    Returns:
+        list: A list of capital IDs corresponding to the inserted data.
+
+    Raises:
+        sqlite3.Error: If there is an error executing the SQLite queries.
+
+    """
+    conn = sqlite3.connect("database/countries.db")
+    c = conn.cursor()
+    list_id = []
+    try:
+        for capital in capitals:
+            capital_query = "SELECT id_capital FROM Capitals WHERE capital = ?"
+            c.execute(capital_query, (capital,))
+            result = c.fetchone()
+            if result is not None:
+                capital_id = result[0]
+            else:
+                insert_query = "INSERT OR IGNORE INTO Capitals (capital) VALUES (?)"
+                c.execute(insert_query, (capital,))
+                capital_id = c.lastrowid
+                print("Data inserted successfully!")
+            list_id.append(capital_id)
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+    finally:
+        conn.close()
+    return list_id
+
+########################################################################################
 
 def get_countries_count():
     """
@@ -283,10 +319,11 @@ def insert_into_zwischentabelle(country_id,second_id,query):
             cursor.execute(query, (country_id, sec_id))
             conn.commit()
     except sqlite3.Error as e:
-        print("SQLite Error:", e)
+        print("SQLite Error: ", e)
     finally:
         conn.close()
 
+########################################################################################
 
 def print_country_data_language():
     """
@@ -309,14 +346,20 @@ def print_country_data_language():
     finally:
         conn.close()
 
-def print_countries():
+def print_country_data_capital():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
     conn = sqlite3.connect("database/countries.db")
     cursor = conn.cursor()
     try:
-        select_query = '''SELECT * FROM Countries'''
+        select_query = '''
+        SELECT Countries.official_name, GROUP_CONCAT(Capitals.capital, ', ') 
+        FROM Countries 
+        JOIN Countries_Capitals ON Countries.id_country = Countries_Capitals.id_country 
+        JOIN Capitals ON Countries_Capitals.id_capital = Capitals.id_capital 
+        GROUP BY Countries.official_name
+        '''
         cursor.execute(select_query)
         rows = cursor.fetchall()
         for row in rows:
@@ -324,18 +367,16 @@ def print_countries():
     finally:
         conn.close()
 
-def print_languages():
-    """
-    Prints all the language data in the 'Languages' table of the SQLite database.
-    """
+########################################################################################
+
+def printallCapitals():
     conn = sqlite3.connect("database/countries.db")
     cursor = conn.cursor()
     try:
-        select_query = '''SELECT * FROM Languages'''
+        select_query = '''SELECT * FROM Capitals'''
         cursor.execute(select_query)
         rows = cursor.fetchall()
         for row in rows:
             print(row)
     finally:
         conn.close()
-# TODO - improve insert func to one big

@@ -78,6 +78,7 @@ queries = [
     CREATE TABLE IF NOT EXISTS Countries_Capitals (
         id_capital INTEGER,
         id_country INTEGER,
+        UNIQUE(id_capital, id_country) ON CONFLICT REPLACE,
         FOREIGN KEY (id_capital) REFERENCES Capitals(id_capital),
         FOREIGN KEY (id_country) REFERENCES Countries(id)
     )
