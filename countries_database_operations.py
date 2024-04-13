@@ -5,80 +5,9 @@ and to insert a new user into the 'user' table.
 """
 
 import sqlite3
-import random
 
 
-def create_database(database_name, query):
-    """
-    Creates a new SQLite database if it doesn't exist and creates a 'user' table in it.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-        query (str): The SQL query to create the 'user' table.
-    """
-    try:
-        with sqlite3.connect("database/"+database_name) as conn:
-            c = conn.cursor()
-            c.execute(query)
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-
-
-def drop_table(database_name, table_name):
-    """
-    Drops a table from the specified database.
-
-    Args:
-        database_name (str): The name of the database.
-        table_name (str): The name of the table to be dropped.
-
-    Returns:
-        None
-    """
-    conn = sqlite3.connect("database/"+database_name)
-    c = conn.cursor()
-    query = f'''DROP TABLE {table_name}'''
-    c.execute(query)
-    conn.commit()
-    conn.close()
-
-
-def insert_user(database_name, name, email):
-    """
-    Inserts a new user into the 'user' table of the SQLite database.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-        name (str): The name of the user.
-        email (str): The email address of the user.
-    """
-    try:
-        with sqlite3.connect("database/"+database_name) as conn:
-            c = conn.cursor()
-            c.execute(
-                "INSERT INTO Users (name, email) VALUES (?, ?)", (name, email))
-            conn.commit()
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-
-
-def print_users(database_name):
-    """
-    Prints all the users in the 'user' table of the SQLite database.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-    """
-    try:
-        with sqlite3.connect("database/"+database_name) as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM Users")
-            rows = cursor.fetchall()
-            for row in rows:
-                print(row)
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-
+DATABASE_COUNTRY_FILE_NAME = "database/countries.db"
 
 def insert_countries_data_to_db(country_data,index):
     """
@@ -97,7 +26,7 @@ def insert_countries_data_to_db(country_data,index):
         INSERT OR IGNORE INTO Countries (id_country,official_name, code, area, population)
         VALUES (?,?, ?, ?, ?)
         '''
-        with sqlite3.connect("database/countries.db") as conn:
+        with sqlite3.connect(DATABASE_COUNTRY_FILE_NAME) as conn:
             c = conn.cursor()
             c.execute(insert_query, (
             index,
@@ -110,27 +39,6 @@ def insert_countries_data_to_db(country_data,index):
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
-def check_email_exists(database_name, email):
-    """
-    Checks if the email exists in the Users table of the specified database.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-        email (str): The email address to check.
-
-    Returns:
-        bool: True if the email exists, False otherwise.
-    """
-    try:
-        with sqlite3.connect("database/"+database_name) as conn:
-            c = conn.cursor()
-            c.execute("SELECT * FROM Users WHERE email = ?", (email,))
-            result = c.fetchone()
-            return result is not None
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-        return False
-
 
 def get_country_entry_by_random_number():
     """
@@ -139,7 +47,7 @@ def get_country_entry_by_random_number():
     Returns:
         A tuple containing the country data.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''SELECT * FROM Countries WHERE id = ?'''
@@ -152,36 +60,41 @@ def get_country_entry_by_random_number():
         conn.close()
 
 
-def insert_country_data_one_param(data, query):
+def get_countries_count():
     """
-    Insert country data into the database using a single parameterized query.
-
-    Args:
-        data (list): A list of data to be inserted into the database.
-        query (str): The parameterized query to insert the data.
+    Retrieves the number of countries in the specified database.
 
     Returns:
-        None
-
-    Raises:
-        sqlite3.Error: If there is an error executing the query.
-
+        The number of countries in the database.
     """
-    conn = sqlite3.connect("database/countries.db")
-    c = conn.cursor()
-    list_id = []
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
+    cursor = conn.cursor()
     try:
-        for d in data:
-            c.execute(query, (d,))
-            list_id.append(c.lastrowid)
-        conn.commit()
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
+        select_query = '''SELECT COUNT(*) FROM Countries'''
+        cursor.execute(select_query)
+        count = cursor.fetchone()[0]
+        print("Number of countries in the database:", count)
+        return count
     finally:
         conn.close()
-    return list_id
+
+def insert_into_zwischentabelle(country_id,second_id,query):
+    """
+    Inserts data into the Zwischentabelle table in the countries.db database.
+    """
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
+    cursor = conn.cursor()
+    try:
+        for sec_id in second_id:
+            cursor.execute(query, (country_id, sec_id))
+            conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite Error: ", e)
+    finally:
+        conn.close()
 
 ########################################################################################
+# The following functions are used to insert data into the database.
 
 def insert_country_data_language(data):
     """
@@ -193,7 +106,7 @@ def insert_country_data_language(data):
     Returns:
         list: A list of language IDs that were inserted or already existed in the database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     c = conn.cursor()
     list_id = []
     try:
@@ -293,7 +206,7 @@ def insert_country_data_borders(borders):
     Returns:
         list: A list of border IDs that were inserted or already existed in the database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     c = conn.cursor()
     list_id = []
     try:
@@ -326,7 +239,7 @@ def insert_country_data_currencies(currencies):
     Returns:
         None
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     c = conn.cursor()
     list_id = []
     try:
@@ -349,47 +262,13 @@ def insert_country_data_currencies(currencies):
     return list_id  
 
 ########################################################################################
-
-def get_countries_count():
-    """
-    Retrieves the number of countries in the specified database.
-
-    Returns:
-        The number of countries in the database.
-    """
-    conn = sqlite3.connect("database/countries.db")
-    cursor = conn.cursor()
-    try:
-        select_query = '''SELECT COUNT(*) FROM Countries'''
-        cursor.execute(select_query)
-        count = cursor.fetchone()[0]
-        print("Number of countries in the database:", count)
-        return count
-    finally:
-        conn.close()
-
-def insert_into_zwischentabelle(country_id,second_id,query):
-    """
-    Inserts data into the Zwischentabelle table in the countries.db database.
-    """
-    conn = sqlite3.connect("database/countries.db")
-    cursor = conn.cursor()
-    try:
-        for sec_id in second_id:
-            cursor.execute(query, (country_id, sec_id))
-            conn.commit()
-    except sqlite3.Error as e:
-        print("SQLite Error: ", e)
-    finally:
-        conn.close()
-
-########################################################################################
+# The following functions are used to print data from the database.
 
 def print_country_data_language():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
@@ -410,7 +289,7 @@ def print_country_data_capital():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
@@ -431,7 +310,7 @@ def print_country_data_continent():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
@@ -452,7 +331,7 @@ def print_country_data_borders():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
@@ -473,7 +352,7 @@ def print_country_data_currencies():
     """
     Prints all the country data in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect("database/countries.db")
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''

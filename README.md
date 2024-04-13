@@ -1,12 +1,18 @@
+# Project Name
+
+[Include the name of your project here]
+
 ## Project Overview
 
-**[Include a brief description of what your project does and its purpose. Highlight its main features or functionalities.]**
+[Provide a brief description of what your project does and its purpose. Highlight its main features or functionalities.]
 
 ## Installation
 
-**[Provide detailed steps on how to install your project. Include any prerequisites, dependencies, or setup instructions.]**
+[Provide detailed steps on how to install your project. Include any prerequisites, dependencies, or setup instructions.]
 
 ## Usage
+
+[Explain how to use your project. Provide instructions, examples, or links to relevant documentation.]
 
 ### country_code_data_utils.ipynb
 
@@ -14,12 +20,6 @@ The **`country_code_data_utils.ipynb`** notebook is a crucial component responsi
 
 #### Instructions:
 
-1. **Order of Execution**: Run each cell in sequential order to avoid any dependency issues.
-
-2. **Data Update Process**: If there are new versions of the data available, follow these steps:
-   - Uncomment the 'drop table' code to delete the existing table.
-   - Run the cells to execute the deletion.
-   - Comment the 'drop table' code again to prevent accidental deletion in the future.
 
 3. **Fetching and Processing Data**: Once the 'drop table' code is commented again, run all cells to fetch and process the new data. Ensure all cells execute successfully.
 

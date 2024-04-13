@@ -2,7 +2,9 @@
 This module contains a Flask application that allows users to enter their name and email address.
 """
 from flask import Flask, request, render_template
-from database_connector_countries import create_database, insert_user, get_country_entry_by_random_number, check_email_exists
+from general_database_operations import create_database
+from countries_database_operations import get_country_entry_by_random_number
+from user_database_operations import insert_user, check_email_exists
 
 
 create_database("users.db",'''CREATE TABLE IF NOT EXISTS Users (
