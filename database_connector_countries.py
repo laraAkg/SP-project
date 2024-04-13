@@ -107,8 +107,6 @@ def insert_countries_data_to_db(country_data,index):
             country_data['population']
             ))
             conn.commit()
-            if c.rowcount > 0:
-                print("Country data inserted successfully!")
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
@@ -154,38 +152,6 @@ def get_country_entry_by_random_number():
         conn.close()
 
 
-def insert_country_data_currencies(currencies):
-    """
-    Inserts the given currency data into the Currencies table in the currencies.db database.
-
-    Args:
-        currency (str): The name of the currency to be inserted.
-
-    Returns:
-        None
-    """
-    conn = sqlite3.connect("database/countries.db")
-    c = conn.cursor()
-    list_id = []
-    try:
-        query = '''INSERT OR IGNORE INTO Currencies (name, symbol) VALUES (?, ?)'''
-        for _, symbol in currencies.items():
-            name = symbol['name']
-            symbol = symbol['symbol']
-            c.execute(query, (name, symbol,))
-            list_id.append( c.lastrowid)
-        conn.commit()
-        print("Currency data inserted successfully!")
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-
-    except AttributeError as e:
-        print("Symbol has a problem:", e)
-    finally:
-        conn.close()
-    return list_id
-
-
 def insert_country_data_one_param(data, query):
     """
     Insert country data into the database using a single parameterized query.
@@ -209,7 +175,6 @@ def insert_country_data_one_param(data, query):
             c.execute(query, (d,))
             list_id.append(c.lastrowid)
         conn.commit()
-        print("Data inserted successfully!")
     except sqlite3.Error as e:
         print("SQLite Error:", e)
     finally:
@@ -242,7 +207,6 @@ def insert_country_data_language(data):
                 insert_query = "INSERT OR IGNORE INTO Languages (language) VALUES (?)"
                 c.execute(insert_query, (language,))
                 language_id = c.lastrowid
-                print("Data inserted successfully!")
             list_id.append(language_id)
         conn.commit()
     except sqlite3.Error as e:
@@ -279,7 +243,6 @@ def insert_country_data_capital(capitals):
                 insert_query = "INSERT OR IGNORE INTO Capitals (capital) VALUES (?)"
                 c.execute(insert_query, (capital,))
                 capital_id = c.lastrowid
-                print("Data inserted successfully!")
             list_id.append(capital_id)
         conn.commit()
     except sqlite3.Error as e:
@@ -287,6 +250,103 @@ def insert_country_data_capital(capitals):
     finally:
         conn.close()
     return list_id
+
+def insert_country_data_continent(data):
+    """
+    Inserts continent data into the 'Continents' table in the 'countries.db' database.
+
+    Args:
+        data (dict): A dictionary containing continent data.
+
+    Returns:
+        list: A list of continent IDs that were inserted or already existed in the database.
+    """
+    conn = sqlite3.connect("database/countries.db")
+    c = conn.cursor()
+    list_id = []
+    try:
+        for continent in data:
+            continent_query = "SELECT id_continent FROM Continents WHERE continent = ?"
+            c.execute(continent_query, (continent,))
+            result = c.fetchone()
+            if result is not None:
+                continent_id = result[0]
+            else:
+                insert_query = "INSERT OR IGNORE INTO Continents (continent) VALUES (?)"
+                c.execute(insert_query, (continent,))
+                continent_id = c.lastrowid
+            list_id.append(continent_id)
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+    finally:
+        conn.close()
+    return list_id
+
+def insert_country_data_borders(borders):
+    """
+    Inserts border data into the 'Borders' table in the 'countries.db' database.
+
+    Args:
+        data (list): A list of border data.
+
+    Returns:
+        list: A list of border IDs that were inserted or already existed in the database.
+    """
+    conn = sqlite3.connect("database/countries.db")
+    c = conn.cursor()
+    list_id = []
+    try:
+        for border in borders:
+            border_query = "SELECT id_border FROM Borders WHERE country_code_short = ?"
+            c.execute(border_query, (border,))
+            result = c.fetchone()
+            if result is not None:
+                border_id = result[0]
+            else:
+                insert_query = "INSERT OR IGNORE INTO Borders (country_code_short) VALUES (?)"
+                c.execute(insert_query, (border,))
+                border_id = c.lastrowid
+            list_id.append(border_id)
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+    finally:
+        conn.close()
+    return list_id
+
+
+def insert_country_data_currencies(currencies):
+    """
+    Inserts the given currency data into the Currencies table in the currencies.db database.
+
+    Args:
+        currency (str): The name of the currency to be inserted.
+
+    Returns:
+        None
+    """
+    conn = sqlite3.connect("database/countries.db")
+    c = conn.cursor()
+    list_id = []
+    try:
+        for _,currency in currencies.items():
+            currency_query = "SELECT id_currency FROM Currencies WHERE name = ?"
+            c.execute(currency_query, (currency.get('name'),))
+            result = c.fetchone()
+            if result is not None:
+                currency_id = result[0]
+            else:
+                insert_query = "INSERT OR IGNORE INTO Currencies (name, symbol) VALUES (?, ?)"
+                c.execute(insert_query, (currency.get('name'),currency.get('symbol')))
+                currency_id = c.lastrowid
+            list_id.append(currency_id)
+        conn.commit()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+    finally:
+        conn.close()
+    return list_id  
 
 ########################################################################################
 
@@ -367,16 +427,66 @@ def print_country_data_capital():
     finally:
         conn.close()
 
-########################################################################################
-
-def printallCapitals():
+def print_country_data_continent():
+    """
+    Prints all the country data in the 'Countries' table of the SQLite database.
+    """
     conn = sqlite3.connect("database/countries.db")
     cursor = conn.cursor()
     try:
-        select_query = '''SELECT * FROM Capitals'''
+        select_query = '''
+        SELECT Countries.official_name, GROUP_CONCAT(Continents.continent, ', ') 
+        FROM Countries 
+        JOIN Countries_Continents ON Countries.id_country = Countries_Continents.id_country 
+        JOIN Continents ON Countries_Continents.id_continent = Continents.id_continent 
+        GROUP BY Countries.official_name
+        '''
         cursor.execute(select_query)
         rows = cursor.fetchall()
         for row in rows:
             print(row)
     finally:
         conn.close()
+
+def print_country_data_borders():
+    """
+    Prints all the country data in the 'Countries' table of the SQLite database.
+    """
+    conn = sqlite3.connect("database/countries.db")
+    cursor = conn.cursor()
+    try:
+        select_query = '''
+        SELECT Countries.official_name, GROUP_CONCAT(Borders.country_code_short, ', ') 
+        FROM Countries 
+        JOIN Countries_Borders ON Countries.id_country = Countries_Borders.id_country 
+        JOIN Borders ON Countries_Borders.id_border = Borders.id_border 
+        GROUP BY Countries.official_name
+        '''
+        cursor.execute(select_query)
+        rows = cursor.fetchall()
+        for row in rows:
+            print(row)
+    finally:
+        conn.close()
+
+def print_country_data_currencies():
+    """
+    Prints all the country data in the 'Countries' table of the SQLite database.
+    """
+    conn = sqlite3.connect("database/countries.db")
+    cursor = conn.cursor()
+    try:
+        select_query = '''
+        SELECT Countries.official_name, GROUP_CONCAT(Currencies.name, ', ') 
+        FROM Countries 
+        JOIN Countries_Currencies ON Countries.id_country = Countries_Currencies.id_country 
+        JOIN Currencies ON Countries_Currencies.id_currency = Currencies.id_currency 
+        GROUP BY Countries.official_name
+        '''
+        cursor.execute(select_query)
+        rows = cursor.fetchall()
+        for row in rows:
+            print(row)
+    finally:
+        conn.close()
+########################################################################################

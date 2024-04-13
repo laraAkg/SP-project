@@ -40,22 +40,23 @@ def fetch_and_insert_data():
                 capital = country.get('capital', {'noCapital': 'No Capital Found'})
                 id_capital = insert_country_data_capital(capital)
 
-               # capitals = country.get('capital', [])
-                #id_capital = insert_country_data_one_param(capitals, '''INSERT INTO Capitals (capital) VALUES (?)''')
+                continents = country.get('continents', {'noContinent': 'No Continent Found'})
+                id_continent = insert_country_data_continent(continents)
 
                 languages = country.get('languages', {'noLang': 'No Language Found'})
                 id_language = insert_country_data_language(languages)
 
-                #borders = country.get('borders', [])
-                #id_border = insert_country_data_one_param(borders, '''INSERT OR IGNORE INTO Borders (country_code_short) VALUES (?)''')
+                borders = country.get('borders', {'island': 'Island'})
+                id_border = insert_country_data_borders(borders)
 
-                #currencies = country.get('currencies', [])
-                #id_currency = insert_country_data_currencies(currencies)
-                #insert_into_zwischentabelle(index,id_border, '''INSERT INTO Countries_Borders (id_boarder,id_country) VALUES (?,?)''')
+                currencies = country.get('currencies', {'NoCurr': {'name': 'No currency', 'symbol': 'No symbol'}})
+                id_currency = insert_country_data_currencies(currencies)
+
+                insert_into_zwischentabelle(index,id_border, '''INSERT INTO Countries_Borders (id_country,id_border) VALUES (?,?)''')
                 insert_into_zwischentabelle(index, id_capital,'''INSERT INTO Countries_Capitals (id_country,id_capital) VALUES (?,?)''')
-                #insert_into_zwischentabelle(index, id_currency,'''INSERT INTO Countries_Currencies (id_currency,id_country) VALUES (?,?)''')
+                insert_into_zwischentabelle(index, id_currency,'''INSERT INTO Countries_Currencies (id_country,id_currency) VALUES (?,?)''')
                 insert_into_zwischentabelle(index, id_language,'''INSERT INTO Countries_Languages (id_country,id_language) VALUES (?,?)''')
-                #insert_into_zwischentabelle(index, id_capital,'''INSERT INTO Countries_Continents (id_country,id_continent) VALUES (?,?)''')
+                insert_into_zwischentabelle(index, id_continent,'''INSERT INTO Countries_Continents (id_country,id_continent) VALUES (?,?)''')
                 index += 1
             except Exception as e:
                 print("Error in loading:", str(e),)
@@ -65,4 +66,4 @@ def fetch_and_insert_data():
 
 fetch_and_insert_data()
 
-print_country_data_capital()
+print_country_data_currencies()

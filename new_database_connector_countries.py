@@ -20,7 +20,6 @@ def execute_query(database_file, query):
 
         # Commit changes to the database
         conn.commit()
-        print("Query executed successfully!")
 
     except sqlite3.Error as e:
         print("Error executing query:", e)
@@ -57,7 +56,7 @@ queries = [
     """,
     """
     CREATE TABLE IF NOT EXISTS Borders (
-        id_boarder INTEGER PRIMARY KEY AUTOINCREMENT,
+        id_border INTEGER PRIMARY KEY AUTOINCREMENT,
         country_code_short TEXT UNIQUE
     )
     """,
@@ -87,6 +86,7 @@ queries = [
     CREATE TABLE IF NOT EXISTS Countries_Currencies (
         id_currency INTEGER,
         id_country INTEGER,
+        UNIQUE(id_currency, id_country) ON CONFLICT REPLACE,
         FOREIGN KEY (id_currency) REFERENCES Currencies(id_currency),
         FOREIGN KEY (id_country) REFERENCES Countries(id)
     )
@@ -104,15 +104,17 @@ queries = [
     CREATE TABLE IF NOT EXISTS Countries_Continents (
         id_continent INTEGER,
         id_country INTEGER,
+        UNIQUE(id_continent, id_country) ON CONFLICT REPLACE,
         FOREIGN KEY (id_continent) REFERENCES Continents(id_continent),
         FOREIGN KEY (id_country) REFERENCES Countries(id)
     )
     """,
     """
     CREATE TABLE IF NOT EXISTS Countries_Borders (
-        id_boarder INTEGER,
+        id_border INTEGER,
         id_country INTEGER,
-        FOREIGN KEY (id_boarder) REFERENCES Borders(id_boarder),
+        UNIQUE(id_border, id_country) ON CONFLICT REPLACE,
+        FOREIGN KEY (id_border) REFERENCES Borders(id_border),
         FOREIGN KEY (id_country) REFERENCES Countries(id)
     )
     """
