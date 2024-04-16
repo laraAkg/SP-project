@@ -14,3 +14,20 @@
 # maybe gitignore, the database
 # setup requirements.txt?
 # update README.md
+
+
+
+
+# person 1 -> get data from users.db for example getUserHighscore (DB) (select/ insert) -> if possible calculate here the top idk 10 (Order By DESC)
+# visualize data you get from getUserHighscore to web top 10 highscore (maybe with pandas?)
+# show highscore in a table on website (web)
+
+# person 2 
+# visualize data you get from countries.db to web with pandas (pandas, db, web)
+# show fun facts regarding the countries (web) maybe in a pie chart -> how many countries are in each continent
+# if no boarders -> island -> how many island vs countries in pie chart?
+
+
+
+1. radio button quiz
+2. lückentext quiz

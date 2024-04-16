@@ -1,77 +1,70 @@
-"""
-This module contains a Flask application that allows users to enter their name and email address.
-"""
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, session
 from general_database_operations import create_database
-from countries_database_operations import get_country_entry_by_random_number
-from user_database_operations import insert_user, check_email_exists
+from user_database_operations import insert_user, check_username_exists
+from country import get_random_countries
+import random
 
+# connection aufbau für DB dann mitgeben
 
-create_database("users.db",'''CREATE TABLE IF NOT EXISTS Users (
+# Create or connect to the SQLite database and create the Users table if it doesn't exist
+create_database("users.db", '''CREATE TABLE IF NOT EXISTS Users (
                             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT,
-                            email TEXT UNIQUE)
+                            name TEXT UNIQUE NOT NULL)
                         ''')
 
-
 app = Flask(__name__)
+
+app.secret_key = 'BAD_SECRET_KEY'
+
+def get_shuffled_country(first_option_country, second_option_country, third_option_country):
+    """
+    Shuffle the countries so that the correct answer is not always in the same position.
+    """
+    countries = [first_option_country, second_option_country, third_option_country]
+    random.shuffle(countries)
+    return countries[0]
+
+
 @app.route('/quiz')
 def quiz():
     """
-    Renders the quiz.html template.
-
-    Returns:
-        The rendered quiz.html template.
+    Render the quiz page.
     """
+    username = session['username']
+    random_countries = get_random_countries()
+    first_option_country = random_countries[0]
+    second_option_country = random_countries[1]
+    third_answer_country =  random_countries[2]
+    correct_country = get_shuffled_country(first_option_country, second_option_country, third_answer_country)
+    # check the correct_country with user input
+    return render_template('quiz.html', correct_country = correct_country ,first_option = first_option_country, second_option = second_option_country, third_option = third_answer_country, username=username)
 
-    country_entry = get_country_entry_by_random_number()
-    return render_template('quiz.html', country_entry=country_entry)
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
     """
-    Renders the user.html template.
-
-    Returns:
-        The rendered user.html template.
+    Render the home page where users can input their name.
+    Save user's name to the database and redirect to the quiz page upon submission.
     """
+    if request.method == 'POST':
+        username = request.form['name']
+        try:
+            if check_username_exists(username):
+                return render_template('user.html', message="User already exists!")
+
+            else:
+                insert_user(username)
+                session['username'] = request.form['name']
+                return redirect('/quiz')
+        except Exception as e:
+            return f'Error saving user: {str(e)}'
     return render_template('user.html')
 
-@app.route('/save_user', methods=['POST'])
-def save_user():
-    """
-    Saves a user's name and email to the database.
-
-    Returns:
-        str: A success message indicating that the user has been saved successfully.
-    """
-    name = request.form['name']
-    email = request.form['email']
-    try:
-        # Check if user already exists in the database
-        if check_email_exists("users.db", email):
-            return "User already exists"
-        else:
-            insert_user("users.db", name, email)
-            return quiz()  # Show the quiz.html template
-
-    except Exception as e:
-        return f'Error saving user: {str(e)}'
-
-@app.route('/user_form', methods=['GET'])
-def user_form():
-    """
-    Renders the user_form.html template.
-
-    Returns:
-        The rendered user_form.html template.
-    """
-    return render_template('user_form.html')
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 
 
-# TODO 1: check if email is already in db if yes return error message
-# TODO 2: navigate to quiz.html if user is saved successfully
-# TODO 3: use REGEX to validate email address & username
+# Regex for username
+# Session to know User
+
+# read all user inputs from quiz.html and store into db

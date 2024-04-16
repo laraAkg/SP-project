@@ -40,26 +40,6 @@ def insert_countries_data_to_db(country_data,index):
         print("SQLite Error:", e)
 
 
-def get_country_entry_by_random_number():
-    """
-    Retrieves a random country entry from the database.
-
-    Returns:
-        A tuple containing the country data.
-    """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
-    try:
-        select_query = '''SELECT * FROM Countries WHERE id = ?'''
-        random_count = random.randint(0, get_countries_count())
-        cursor.execute(select_query, (random_count,))
-        row = cursor.fetchone()
-        print("Random country entry:", row)
-        return row
-    finally:
-        conn.close()
-
-
 def get_countries_count():
     """
     Retrieves the number of countries in the specified database.
@@ -262,110 +242,187 @@ def insert_country_data_currencies(currencies):
     return list_id  
 
 ########################################################################################
-# The following functions are used to print data from the database.
+# The following functions are used to retrieve data from the database.
 
-def print_country_data_language():
+def return_country_data_official_name(country_id):
     """
-    Prints all the country data in the 'Countries' table of the SQLite database.
+    Returns the official name of a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        str: The official name of the country.
     """
     conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
-        SELECT Countries.official_name, GROUP_CONCAT(Languages.language, ', ') 
+        SELECT official_name
         FROM Countries 
-        JOIN Countries_Languages ON Countries.id_country = Countries_Languages.id_country 
-        JOIN Languages ON Countries_Languages.id_language = Languages.id_language 
-        GROUP BY Countries.official_name
+        WHERE id_country = ?
         '''
-        cursor.execute(select_query)
-        rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        cursor.execute(select_query, (country_id,))
     finally:
         conn.close()
 
-def print_country_data_capital():
+
+def return_country_data_capital(country_id):
     """
-    Prints all the country data in the 'Countries' table of the SQLite database.
+    Returns the capital data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        list: A list of capital names.
     """
     conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
-        SELECT Countries.official_name, GROUP_CONCAT(Capitals.capital, ', ') 
+        SELECT Capitals.capital
         FROM Countries 
         JOIN Countries_Capitals ON Countries.id_country = Countries_Capitals.id_country 
         JOIN Capitals ON Countries_Capitals.id_capital = Capitals.id_capital 
-        GROUP BY Countries.official_name
+        WHERE Countries.id_country = ?
         '''
-        cursor.execute(select_query)
+        cursor.execute(select_query, (country_id,))
         rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        capitals = [row[0] for row in rows]
+        return capitals
     finally:
         conn.close()
 
-def print_country_data_continent():
+def return_country_data_continent(country_id):
     """
-    Prints all the country data in the 'Countries' table of the SQLite database.
+    Returns the continent data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        list: A list of continent names.
     """
     conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
-        SELECT Countries.official_name, GROUP_CONCAT(Continents.continent, ', ') 
+        SELECT Continents.continent
         FROM Countries 
         JOIN Countries_Continents ON Countries.id_country = Countries_Continents.id_country 
         JOIN Continents ON Countries_Continents.id_continent = Continents.id_continent 
-        GROUP BY Countries.official_name
+        WHERE Countries.id_country = ?
         '''
-        cursor.execute(select_query)
+        cursor.execute(select_query, (country_id,))
         rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        continents = [row[0] for row in rows]
+        return continents
     finally:
         conn.close()
 
-def print_country_data_borders():
+def return_country_data_borders(country_id):
     """
-    Prints all the country data in the 'Countries' table of the SQLite database.
+    Returns the border data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        list: A list of border names.
     """
     conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
-        SELECT Countries.official_name, GROUP_CONCAT(Borders.country_code_short, ', ') 
+        SELECT Borders.country_code_short
         FROM Countries 
         JOIN Countries_Borders ON Countries.id_country = Countries_Borders.id_country 
         JOIN Borders ON Countries_Borders.id_border = Borders.id_border 
-        GROUP BY Countries.official_name
+        WHERE Countries.id_country = ?
         '''
-        cursor.execute(select_query)
+        cursor.execute(select_query, (country_id,))
         rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        borders = [row[0] for row in rows]
+        return borders
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
     finally:
         conn.close()
 
-def print_country_data_currencies():
+def return_country_data_population(country_id):
     """
-    Prints all the country data in the 'Countries' table of the SQLite database.
+    Returns the population data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        int: The population of the country.
     """
     conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
     cursor = conn.cursor()
     try:
         select_query = '''
-        SELECT Countries.official_name, GROUP_CONCAT(Currencies.name, ', ') 
+        SELECT population
         FROM Countries 
-        JOIN Countries_Currencies ON Countries.id_country = Countries_Currencies.id_country 
-        JOIN Currencies ON Countries_Currencies.id_currency = Currencies.id_currency 
-        GROUP BY Countries.official_name
+        WHERE id_country = ?
         '''
-        cursor.execute(select_query)
-        rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        cursor.execute(select_query, (country_id,))
+        population = cursor.fetchone()[0]
+        return population
     finally:
         conn.close()
+
+def return_country_data_area(country_id):
+    """
+    Returns the area data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        int: The area of the country.
+    """
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
+    cursor = conn.cursor()
+    try:
+        select_query = '''
+        SELECT area
+        FROM Countries 
+        WHERE id_country = ?
+        '''
+        cursor.execute(select_query, (country_id,))
+        area = cursor.fetchone()[0]
+        return area
+    finally:
+        conn.close()
+
+def return_country_data_languages(country_id):
+    """
+    Returns the language data for a specific country ID in the 'Countries' table of the SQLite database.
+
+    Args:
+        country_id (int): The ID of the country.
+
+    Returns:
+        list: A list of language names.
+    """
+    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
+    cursor = conn.cursor()
+    try:
+        select_query = '''
+        SELECT Languages.language
+        FROM Countries 
+        JOIN Countries_Languages ON Countries.id_country = Countries_Languages.id_country 
+        JOIN Languages ON Countries_Languages.id_language = Languages.id_language 
+        WHERE Countries.id_country = ?
+        '''
+        cursor.execute(select_query, (country_id,))
+        rows = cursor.fetchall()
+        languages = [row[0] for row in rows]
+        return languages
+    finally:
+        conn.close()
+
 ########################################################################################

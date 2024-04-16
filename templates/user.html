@@ -6,25 +6,60 @@
     <title>User Page and Form</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 30px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>User Page</h1>
-        <!-- Your user page content goes here -->
 
         <h2>User Form</h2>
-        <form action="/save_user" method="post">
+        <form action="/" method="post">
             <div class="form-group">
-                <label for="name">Name:</label>
+                <label for="name">Username:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <button type="submit" class="btn btn-primary">Save User</button>
         </form>
     </div>
+    
+    {% if message != None %}
+        <div class="container">
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        </div>
+    {% endif %}
 
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
