@@ -1,15 +1,15 @@
 """
-This module provides functions to interact with a SQLite database. 
-It includes functions to create a new database and table, 
+This module provides functions to interact with a SQLite database.
+It includes functions to create a new database and table,
 and to insert a new user into the 'user' table.
 """
 
 import sqlite3
+import random
+from country import Country
 
 
-DATABASE_COUNTRY_FILE_NAME = "database/countries.db"
-
-def insert_countries_data_to_db(country_data,index):
+def insert_countries_data_to_db(connection, country_data, index):
     """
     Creates a table in the specified database and inserts country data into it.
 
@@ -26,68 +26,65 @@ def insert_countries_data_to_db(country_data,index):
         INSERT OR IGNORE INTO Countries (id_country,official_name, code, area, population)
         VALUES (?,?, ?, ?, ?)
         '''
-        with sqlite3.connect(DATABASE_COUNTRY_FILE_NAME) as conn:
-            c = conn.cursor()
-            c.execute(insert_query, (
+        c = connection.cursor()
+        c.execute(insert_query, (
             index,
             country_data['name'],
             country_data['code'],
             country_data['area'],
             country_data['population']
-            ))
-            conn.commit()
+        ))
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
 
-def get_countries_count():
+def get_countries_count(connection):
     """
-    Retrieves the number of countries in the specified database.
-
-    Returns:
-        The number of countries in the database.
+    Returns the number of countries in the 'Countries' table of the SQLite database.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''SELECT COUNT(*) FROM Countries'''
         cursor.execute(select_query)
         count = cursor.fetchone()[0]
         print("Number of countries in the database:", count)
         return count
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
-def insert_into_zwischentabelle(country_id,second_id,query):
+
+def insert_into_zwischentabelle(connection, country_id, second_id, query):
     """
     Inserts data into the Zwischentabelle table in the countries.db database.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         for sec_id in second_id:
             cursor.execute(query, (country_id, sec_id))
-            conn.commit()
+            connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error: ", e)
-    finally:
-        conn.close()
+
 
 ########################################################################################
 # The following functions are used to insert data into the database.
 
-def insert_country_data_language(data):
+def insert_country_data_language(connection, data):
     """
-    Inserts language data into the 'Languages' table in the 'countries.db' database.
-    
+    Inserts language data into the database and returns a list of language IDs.
+
     Args:
-        data (dict): A dictionary containing language data.
-        
+        connection: The SQLite database connection object.
+        data: A dictionary containing language data.
+
     Returns:
-        list: A list of language IDs that were inserted or already existed in the database.
+        A list of language IDs corresponding to the inserted data.
+
+    Raises:
+        sqlite3.Error: If there is an error executing the SQLite queries.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    c = conn.cursor()
+    c = connection.cursor()
     list_id = []
     try:
         for _, language in data.items():
@@ -101,29 +98,24 @@ def insert_country_data_language(data):
                 c.execute(insert_query, (language,))
                 language_id = c.lastrowid
             list_id.append(language_id)
-        conn.commit()
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
     return list_id
 
-def insert_country_data_capital(capitals):
+
+def insert_country_data_capital(connection, capitals):
     """
-    Inserts country data into the database and returns a list of capital IDs.
+    Inserts capital data into the database and returns a list of capital IDs.
 
     Args:
-        data (dict): A dictionary containing country data with capital names as values.
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+        capitals (list): A list of capital names to be inserted into the database.
 
     Returns:
-        list: A list of capital IDs corresponding to the inserted data.
-
-    Raises:
-        sqlite3.Error: If there is an error executing the SQLite queries.
-
+        list: A list of capital IDs corresponding to the inserted capitals.
     """
-    conn = sqlite3.connect("database/countries.db")
-    c = conn.cursor()
+    c = connection.cursor()
     list_id = []
     try:
         for capital in capitals:
@@ -137,25 +129,24 @@ def insert_country_data_capital(capitals):
                 c.execute(insert_query, (capital,))
                 capital_id = c.lastrowid
             list_id.append(capital_id)
-        conn.commit()
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
     return list_id
 
-def insert_country_data_continent(data):
+
+def insert_country_data_continent(connection, data):
     """
-    Inserts continent data into the 'Continents' table in the 'countries.db' database.
+    Inserts country data into the Continents table in the database.
 
     Args:
-        data (dict): A dictionary containing continent data.
+        connection: The SQLite database connection object.
+        data: A list of continents.
 
     Returns:
-        list: A list of continent IDs that were inserted or already existed in the database.
+        A list of continent IDs that were inserted or already existed in the database.
     """
-    conn = sqlite3.connect("database/countries.db")
-    c = conn.cursor()
+    c = connection.cursor()
     list_id = []
     try:
         for continent in data:
@@ -169,25 +160,24 @@ def insert_country_data_continent(data):
                 c.execute(insert_query, (continent,))
                 continent_id = c.lastrowid
             list_id.append(continent_id)
-        conn.commit()
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
     return list_id
 
-def insert_country_data_borders(borders):
+
+def insert_country_data_borders(connection, borders):
     """
-    Inserts border data into the 'Borders' table in the 'countries.db' database.
+    Inserts country border data into the database.
 
     Args:
-        data (list): A list of border data.
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+        borders (list): A list of country codes representing the borders.
 
     Returns:
         list: A list of border IDs that were inserted or already existed in the database.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    c = conn.cursor()
+    c = connection.cursor()
     list_id = []
     try:
         for border in borders:
@@ -201,29 +191,27 @@ def insert_country_data_borders(borders):
                 c.execute(insert_query, (border,))
                 border_id = c.lastrowid
             list_id.append(border_id)
-        conn.commit()
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
     return list_id
 
 
-def insert_country_data_currencies(currencies):
+def insert_country_data_currencies(connection, currencies):
     """
-    Inserts the given currency data into the Currencies table in the currencies.db database.
+    Inserts currency data into the Currencies table in the database.
 
     Args:
-        currency (str): The name of the currency to be inserted.
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+        currencies (dict): A dictionary containing currency data.
 
     Returns:
-        None
+        list: A list of currency IDs that were inserted or retrieved from the database.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    c = conn.cursor()
+    c = connection.cursor()
     list_id = []
     try:
-        for _,currency in currencies.items():
+        for _, currency in currencies.items():
             currency_query = "SELECT id_currency FROM Currencies WHERE name = ?"
             c.execute(currency_query, (currency.get('name'),))
             result = c.fetchone()
@@ -231,31 +219,31 @@ def insert_country_data_currencies(currencies):
                 currency_id = result[0]
             else:
                 insert_query = "INSERT OR IGNORE INTO Currencies (name, symbol) VALUES (?, ?)"
-                c.execute(insert_query, (currency.get('name'),currency.get('symbol')))
+                c.execute(insert_query, (currency.get(
+                    'name'), currency.get('symbol')))
                 currency_id = c.lastrowid
             list_id.append(currency_id)
-        conn.commit()
+        connection.commit()
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
-    return list_id  
+    return list_id
 
 ########################################################################################
-# The following functions are used to retrieve data from the database.
+# The following functions are used to retrieve data from the database.    
 
-def return_country_data_official_name(country_id):
+def return_country_data_official_name(connection, country_id):
     """
     Returns the official name of a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         str: The official name of the country.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT official_name
@@ -263,22 +251,27 @@ def return_country_data_official_name(country_id):
         WHERE id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
-    finally:
-        conn.close()
+        official_name = cursor.fetchone()[0]
+        if official_name:
+            return official_name
+        else:
+            return "No official name"
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
 
-def return_country_data_capital(country_id):
+def return_country_data_capital(connection, country_id):
     """
     Returns the capital data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         list: A list of capital names.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT Capitals.capital
@@ -291,21 +284,22 @@ def return_country_data_capital(country_id):
         rows = cursor.fetchall()
         capitals = [row[0] for row in rows]
         return capitals
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
-def return_country_data_continent(country_id):
+
+def return_country_data_continent(connection, country_id):
     """
     Returns the continent data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         list: A list of continent names.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT Continents.continent
@@ -318,21 +312,22 @@ def return_country_data_continent(country_id):
         rows = cursor.fetchall()
         continents = [row[0] for row in rows]
         return continents
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
-def return_country_data_borders(country_id):
+
+def return_country_data_borders(connection, country_id):
     """
     Returns the border data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         list: A list of border names.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT Borders.country_code_short
@@ -347,21 +342,20 @@ def return_country_data_borders(country_id):
         return borders
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-    finally:
-        conn.close()
 
-def return_country_data_population(country_id):
+
+def return_country_data_population(connection, country_id):
     """
     Returns the population data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         int: The population of the country.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT population
@@ -371,21 +365,22 @@ def return_country_data_population(country_id):
         cursor.execute(select_query, (country_id,))
         population = cursor.fetchone()[0]
         return population
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
-def return_country_data_area(country_id):
+
+def return_country_data_area(connection, country_id):
     """
     Returns the area data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         int: The area of the country.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT area
@@ -395,21 +390,22 @@ def return_country_data_area(country_id):
         cursor.execute(select_query, (country_id,))
         area = cursor.fetchone()[0]
         return area
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
-def return_country_data_languages(country_id):
+
+def return_country_data_languages(connection, country_id):
     """
     Returns the language data for a specific country ID in the 'Countries' table of the SQLite database.
 
     Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
         country_id (int): The ID of the country.
 
     Returns:
         list: A list of language names.
     """
-    conn = sqlite3.connect(DATABASE_COUNTRY_FILE_NAME)
-    cursor = conn.cursor()
+    cursor = connection.cursor()
     try:
         select_query = '''
         SELECT Languages.language
@@ -422,7 +418,41 @@ def return_country_data_languages(country_id):
         rows = cursor.fetchall()
         languages = [row[0] for row in rows]
         return languages
-    finally:
-        conn.close()
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
 
 ########################################################################################
+
+
+def get_random_countries(connection):
+    """
+    Returns a list of randomly generated Country objects.
+
+    Parameters:
+    - connection: The database connection object.
+
+    Returns:
+    - countries: A list of Country objects.
+
+    """
+    countries = []
+    for _ in range(3):
+        while True:
+            random_int = random.randint(0, get_countries_count(connection))
+            official_name = return_country_data_official_name(
+                connection, random_int)
+            capital = return_country_data_capital(connection, random_int)
+            continent = return_country_data_continent(
+                connection, random_int)
+            borders = return_country_data_borders(connection, random_int)
+            population = return_country_data_population(
+                connection, random_int)
+            area = return_country_data_area(connection, random_int)
+            languages = return_country_data_languages(
+                connection, random_int)
+            country = Country(official_name, capital, continent,
+                                borders, population, area, languages)
+            if capital not in [c.capital for c in countries]:
+                break
+        countries.append(country)
+    return countries

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+
+<body>
+    <header class="bg-primary py-4">
+        <div class="container text-center">
+            <h1 class="text-white">World wide quiz</h1>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="quiz-content d-flex justify-content-center align-items-center">
+            <div class="container text-center">
+                <h1>Welcome to the Quiz!</h1>
+                <p>Let's test your knowledge about countries around the world</p>
+
+                <div class="card p-4 rounded shadow-sm mt-4">
+                    <div class="quiz-question">
+                        <h2>Question:</h2>
+                        {% if correct_country.borders[0] == "island" %}
+                        <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
+                            capital city called
+                            _________
+                            perched on the continent of {{ ', '.join(correct_country.continent)
+                            }}. The population is {{ correct_country.population }}, and the land area spans {{
+                            correct_country.area
+                            }}. This country is an island in the vast ocean.</p>
+                        {% else %}
+                        <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
+                            capital city called
+                            _________
+                            perched on the continent of {{ ', '.join(correct_country.continent)
+                            }}. The population is {{ correct_country.population }}, and the land area spans {{
+                            correct_country.area
+                            }}. This country shares borders with {{ ', '.join(correct_country.borders) }} and the
+                            official language
+                            spoken here is {{ ', '.join(correct_country.languages) }}.</p>
+                        {% endif %}
+                    </div>
+
+                    <form action="/quiz/capital" method="post" class="quiz-options">
+                        <div>
+                            <h2>Options:</h2>
+                            <input type="radio" name="option" id="option1" value={{ ', ' .join(first_option.capital) }}>
+                            <label for="option1">{{ ', '.join(first_option.capital) }}</label>
+                            </br>
+                            <input type="radio" name="option" id="option2" value={{ ', ' .join(second_option.capital)
+                                }}>
+                            <label for="option2">{{ ', '.join(second_option.capital) }}</label>
+                            </br>
+                            <input type="radio" name="option" id="option3" value={{ ', ' .join(third_option.capital) }}>
+                            <label for="option3">{{ ', '.join(third_option.capital) }}</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

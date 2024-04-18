@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page and Form</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/templates/styles/style.css"> <!-- External CSS for styling -->
+</head>
+<body>
+    <header class="bg-primary py-4">
+        <div class="container text-center">
+            <h1 class="text-white">World wide quiz</h1>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <section>
+            <h2 class="text-center mb-4">Lets play a game!</h2>
+            <div class="card p-4 rounded shadow-sm">
+            <form id="userForm" action="/" method="post">
+                <div class="form-group">
+                <input type="text" class="form-control" id="name" name="name" required aria-label="Username" placeholder="Username">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Save User</button>
+            </form>
+            </div>
+        </section>
+
+        {% if message %}
+        <div class="alert alert-success mt-4" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+    </main>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/templates/scripts/script.js"></script>
+</body>
+</html>
