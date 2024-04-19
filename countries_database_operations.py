@@ -423,7 +423,6 @@ def return_country_data_languages(connection, country_id):
 
 ########################################################################################
 
-
 def get_random_countries(connection):
     """
     Returns a list of randomly generated Country objects.

@@ -47,17 +47,14 @@
                     <form action="/quiz/population" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value={{ ', ' .join(first_option.population)
-                                }}>
-                            <label for="option1">{{ ', '.join(first_option.population) }}</label>
+                            <input type="radio" name="option" id="option1" value={{ first_option.population }}>
+                            <label for="option1">{{ first_option.population }}</label>
                             </br>
-                            <input type="radio" name="option" id="option2" value={{ ', ' .join(second_option.population)
-                                }}>
-                            <label for="option2">{{ ', '.join(second_option.population) }}</label>
+                            <input type="radio" name="option" id="option2" value={{ second_option.population }}>
+                            <label for="option2">{{ second_option.population }}</label>
                             </br>
-                            <input type="radio" name="option" id="option3" value={{ ', ' .join(third_option.population)
-                                }}>
-                            <label for="option3">{{ ', '.join(third_option.population) }}</label>
+                            <input type="radio" name="option" id="option3" value={{ third_option.population }}>
+                            <label for="option3">{{ third_option.population }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>

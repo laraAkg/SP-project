@@ -1,6 +1,6 @@
 "This script creates the tables in the SQLite database for the countries project."
-import requests
 import sqlite3
+import requests
 from countries_database_operations import (
     insert_countries_data_to_db,
     insert_country_data_capital,
