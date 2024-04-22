@@ -208,17 +208,17 @@ def insert_country_data_currencies(connection, currencies):
     Returns:
         list: A list of currency IDs that were inserted or retrieved from the database.
     """
-    c = connection.cursor()
     list_id = []
     try:
         for _, currency in currencies.items():
+            c = connection.cursor()
             currency_query = "SELECT id_currency FROM Currencies WHERE name = ?"
             c.execute(currency_query, (currency.get('name'),))
             result = c.fetchone()
             if result is not None:
                 currency_id = result[0]
             else:
-                insert_query = "INSERT OR IGNORE INTO Currencies (name, symbol) VALUES (?, ?)"
+                insert_query = "INSERT INTO Currencies (name, symbol) VALUES (?, ?)"
                 c.execute(insert_query, (currency.get(
                     'name'), currency.get('symbol')))
                 currency_id = c.lastrowid
@@ -229,11 +229,13 @@ def insert_country_data_currencies(connection, currencies):
     return list_id
 
 ########################################################################################
-# The following functions are used to retrieve data from the database.    
+# The following functions are used to retrieve data from the database.
+
 
 def return_country_data_official_name(connection, country_id):
     """
-    Returns the official name of a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the official name of a specific country ID in
+    the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -247,7 +249,7 @@ def return_country_data_official_name(connection, country_id):
     try:
         select_query = '''
         SELECT official_name
-        FROM Countries 
+        FROM Countries
         WHERE id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -262,7 +264,8 @@ def return_country_data_official_name(connection, country_id):
 
 def return_country_data_capital(connection, country_id):
     """
-    Returns the capital data for a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the capital data for a specific country ID
+    in the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -275,9 +278,9 @@ def return_country_data_capital(connection, country_id):
     try:
         select_query = '''
         SELECT Capitals.capital
-        FROM Countries 
-        JOIN Countries_Capitals ON Countries.id_country = Countries_Capitals.id_country 
-        JOIN Capitals ON Countries_Capitals.id_capital = Capitals.id_capital 
+        FROM Countries
+        JOIN Countries_Capitals ON Countries.id_country = Countries_Capitals.id_country
+        JOIN Capitals ON Countries_Capitals.id_capital = Capitals.id_capital
         WHERE Countries.id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -290,7 +293,8 @@ def return_country_data_capital(connection, country_id):
 
 def return_country_data_continent(connection, country_id):
     """
-    Returns the continent data for a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the continent data for a specific country ID
+    in the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -303,9 +307,9 @@ def return_country_data_continent(connection, country_id):
     try:
         select_query = '''
         SELECT Continents.continent
-        FROM Countries 
-        JOIN Countries_Continents ON Countries.id_country = Countries_Continents.id_country 
-        JOIN Continents ON Countries_Continents.id_continent = Continents.id_continent 
+        FROM Countries
+        JOIN Countries_Continents ON Countries.id_country = Countries_Continents.id_country
+        JOIN Continents ON Countries_Continents.id_continent = Continents.id_continent
         WHERE Countries.id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -318,7 +322,8 @@ def return_country_data_continent(connection, country_id):
 
 def return_country_data_borders(connection, country_id):
     """
-    Returns the border data for a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the border data for a specific country ID
+    in the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -331,9 +336,9 @@ def return_country_data_borders(connection, country_id):
     try:
         select_query = '''
         SELECT Borders.country_code_short
-        FROM Countries 
-        JOIN Countries_Borders ON Countries.id_country = Countries_Borders.id_country 
-        JOIN Borders ON Countries_Borders.id_border = Borders.id_border 
+        FROM Countries
+        JOIN Countries_Borders ON Countries.id_country = Countries_Borders.id_country
+        JOIN Borders ON Countries_Borders.id_border = Borders.id_border
         WHERE Countries.id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -346,7 +351,8 @@ def return_country_data_borders(connection, country_id):
 
 def return_country_data_population(connection, country_id):
     """
-    Returns the population data for a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the population data for a specific country ID
+    in the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -359,7 +365,7 @@ def return_country_data_population(connection, country_id):
     try:
         select_query = '''
         SELECT population
-        FROM Countries 
+        FROM Countries
         WHERE id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -384,19 +390,20 @@ def return_country_data_area(connection, country_id):
     try:
         select_query = '''
         SELECT area
-        FROM Countries 
+        FROM Countries
         WHERE id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
         area = cursor.fetchone()[0]
-        return area
+        return int(area)
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
 
 def return_country_data_languages(connection, country_id):
     """
-    Returns the language data for a specific country ID in the 'Countries' table of the SQLite database.
+    Returns the language data for a specific country ID
+    in the 'Countries' table of the SQLite database.
 
     Args:
         connection (sqlite3.Connection): The connection object to the SQLite database.
@@ -409,9 +416,9 @@ def return_country_data_languages(connection, country_id):
     try:
         select_query = '''
         SELECT Languages.language
-        FROM Countries 
-        JOIN Countries_Languages ON Countries.id_country = Countries_Languages.id_country 
-        JOIN Languages ON Countries_Languages.id_language = Languages.id_language 
+        FROM Countries
+        JOIN Countries_Languages ON Countries.id_country = Countries_Languages.id_country
+        JOIN Languages ON Countries_Languages.id_language = Languages.id_language
         WHERE Countries.id_country = ?
         '''
         cursor.execute(select_query, (country_id,))
@@ -421,7 +428,65 @@ def return_country_data_languages(connection, country_id):
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
+
+def return_country_data_currency(connection, country_id):
+    """
+    Returns the currency data for a specific country ID
+    in the 'Countries' table of the SQLite database.
+
+    Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+        country_id (int): The ID of the country.
+
+    Returns:
+        list: A list of currency names.
+    """
+    cursor = connection.cursor()
+    try:
+        select_query = '''
+        SELECT Currencies.name, Currencies.symbol
+        FROM Countries
+        JOIN Countries_Currencies ON Countries.id_country = Countries_Currencies.id_country
+        JOIN Currencies ON Countries_Currencies.id_currency = Currencies.id_currency
+        WHERE Countries.id_country = ?
+        '''
+        cursor.execute(select_query, (country_id,))
+        rows = cursor.fetchall()
+        currencies = [{'name': row[0], 'symbol': row[1]} for row in rows]
+        currencies_string = ', '.join(
+            [f"{currency['name']} ({currency['symbol']})" for currency in currencies])
+        return currencies_string
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+
+
+def return_three_different_continents(connection):
+    """
+    Returns a list of three different continents from the Continents table in the database.
+
+    Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+
+    Returns:
+        list: A list of three different continent names.
+    """
+    cursor = connection.cursor()
+    try:
+        select_query = '''
+        SELECT id_continent
+        FROM Continents
+        ORDER BY RANDOM()
+        LIMIT 3
+        '''
+        cursor.execute(select_query)
+        rows = cursor.fetchall()
+        continents = [row[0] for row in rows]
+        return continents
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+
 ########################################################################################
+
 
 def get_random_countries(connection):
     """
@@ -449,9 +514,45 @@ def get_random_countries(connection):
             area = return_country_data_area(connection, random_int)
             languages = return_country_data_languages(
                 connection, random_int)
+            currency = return_country_data_currency(
+                connection, random_int)
             country = Country(official_name, capital, continent,
-                                borders, population, area, languages)
+                              borders, population, area, languages, currency)
             if capital not in [c.capital for c in countries]:
                 break
         countries.append(country)
     return countries
+
+
+def get_country_by_continent_id(connection, continent_id):
+    """
+    Returns a list of countries that belong to a specific continent.
+
+    Parameters:
+    - continent_id: The ID of the continent.
+
+    Returns:
+    - countries: A list of countries that belong to the specified continent.
+
+    """
+    try:
+        select_query = '''
+        SELECT Countries.id_country, Countries.official_name, Countries.code, Countries.area, Countries.population, Continents.continent
+        FROM Countries
+        JOIN Countries_Continents ON Countries.id_country = Countries_Continents.id_country
+        JOIN Continents ON Countries_Continents.id_continent = Continents.id_continent
+        WHERE Countries_Continents.id_continent = ?
+        ORDER BY RANDOM()
+        '''
+        cursor = connection.cursor()
+        cursor.execute(select_query, (continent_id,))
+        result = cursor.fetchone()
+
+        borders = return_country_data_borders(connection, result[0])
+        capital = return_country_data_capital(connection, result[0])
+        languages = return_country_data_languages(connection, result[0])
+        currency = return_country_data_currency(connection, result[0])
+
+        return Country(result[1], capital, result[5], borders, result[4], result[3], languages, currency)
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)

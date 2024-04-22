@@ -1,7 +1,3 @@
-# have maybe subfolders for user/quiz/country
-# Improve db queries (not building always new connection, use existing one)
-# Make sentence structure so that it can be used in the future for quiz
-# have radio buttons send answer back to the python script
 # increase user highscore points depending on how he managed to answer the quiz
 # have a leaderboard with some graphics
 # end of quiz show statistical data like -> gini table maybe Balkendiagramm wo am meisten länder etc (first clarify what to show)
@@ -27,7 +23,6 @@
 # show fun facts regarding the countries (web) maybe in a pie chart -> how many countries are in each continent
 # if no boarders -> island -> how many island vs countries in pie chart?
 
-
-
-1. radio button quiz
-2. lückentext quiz
+# input user score
+# when new game then start score again from 0
+# check if date is 30 days if yes then do new api call

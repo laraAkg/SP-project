@@ -8,7 +8,7 @@ class Country:
     population, area, and languages.
     """
 
-    def __init__(self, official_name, capital, continent, borders, population, area, languages):
+    def __init__(self, official_name, capital, continent, borders, population, area, languages, currency):
         """
         Initializes a new instance of the Country class.
 
@@ -28,3 +28,4 @@ class Country:
         self.population = population
         self.area = area
         self.languages = languages
+        self.currency = currency

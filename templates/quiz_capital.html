@@ -31,7 +31,8 @@
                             perched on the continent of {{ ', '.join(correct_country.continent)
                             }}. The population is {{ correct_country.population }}, and the land area spans {{
                             correct_country.area
-                            }}. This country is an island in the vast ocean.</p>
+                            }}. This country is an island in the vast ocean. The official language spoken here is {{ ',
+                            '.join(correct_country.languages) }}.</p>
                         {% else %}
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called
@@ -43,18 +44,24 @@
                             official language
                             spoken here is {{ ', '.join(correct_country.languages) }}.</p>
                         {% endif %}
+                        {% if correct_country.currency != "" %}
+                        <p>The currency used is {{ correct_country.currency }}.</p>
+                        {% endif %}
                     </div>
 
                     <form action="/quiz/capital" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value="{{ ', ' .join(first_option.capital) }}">
+                            <input type="radio" name="option" id="option1"
+                                value="{{ ', ' .join(first_option.capital) }}" required>
                             <label for="option1">{{ ', '.join(first_option.capital) }}</label>
                             </br>
-                            <input type="radio" name="option" id="option2" value="{{ ', ' .join(second_option.capital) }}">
+                            <input type="radio" name="option" id="option2"
+                                value="{{ ', ' .join(second_option.capital) }}" required>
                             <label for="option2">{{ ', '.join(second_option.capital) }}</label>
                             </br>
-                            <input type="radio" name="option" id="option3" value="{{ ', ' .join(third_option.capital) }}">
+                            <input type="radio" name="option" id="option3"
+                                value="{{ ', ' .join(third_option.capital) }}" required>
                             <label for="option3">{{ ', '.join(third_option.capital) }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>

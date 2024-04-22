@@ -37,19 +37,22 @@
                             official language
                             spoken here is {{ ', '.join(correct_country.languages) }}.</p>
                         {% endif %}
+                        {% if correct_country.currency != "" %}
+                        <p>The currency used is {{ correct_country.currency }}.</p>
+                        {% endif %}
                     </div>
 
                     <form action="/quiz/continent" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value="{{ ', ' .join(first_option.continent) }}">
-                            <label for="option1">{{ ', '.join(first_option.continent) }}</label>
+                            <input type="radio" name="option" id="option1" value="{{ first_option.continent }}" required>
+                            <label for="option1">{{ first_option.continent }}</label>
                             </br>
-                            <input type="radio" name="option" id="option2" value="{{ ', ' .join(second_option.continent)}}">
-                            <label for="option2">{{ ', '.join(second_option.continent) }}</label>
+                            <input type="radio" name="option" id="option2" value="{{ second_option.continent }}" required>
+                            <label for="option2">{{ second_option.continent }}</label>
                             </br>
-                            <input type="radio" name="option" id="option3" value="{{ ', ' .join(third_option.continent) }}">
-                            <label for="option3">{{ ', '.join(third_option.continent) }}</label>
+                            <input type="radio" name="option" id="option3" value="{{ third_option.continent }}" required>
+                            <label for="option3">{{ third_option.continent }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>

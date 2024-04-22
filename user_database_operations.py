@@ -39,24 +39,6 @@ def insert_user(connection, name):
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
-
-def print_users(connection):
-    """
-    Prints all the users in the 'user' table of the SQLite database.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-    """
-    try:
-        cursor = connection.cursor()
-        cursor.execute("SELECT * FROM Users")
-        rows = cursor.fetchall()
-        for row in rows:
-            print(row)
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-
-
 def check_username_exists(connection, username):
     """
     Checks if the username exists in the Users table of the specified database.
@@ -93,12 +75,12 @@ def get_user_score(connection, username):
         c = connection.cursor()
         c.execute("SELECT score FROM Users WHERE name = ?", (username,))
         result = c.fetchone()
-        return result[0] if result else None
+        return result
     except sqlite3.Error as e:
         print("SQLite Error:", e)
         return None
 
-def set_user_score(connection, username, new_score):
+def set_user_score(connection, username, ):
     """
     Updates the score of the specified user in the Users table.
 
@@ -108,14 +90,12 @@ def set_user_score(connection, username, new_score):
         new_score (int): The new score to set for the user.
 
     Returns:
-        bool: True if the score was updated successfully, False otherwise.
+        None
     """
     try:
         c = connection.cursor()
-        c.execute("UPDATE Users SET score = ? WHERE name = ?", (new_score, username))
+        c.execute("UPDATE Users SET score = score + 50 WHERE name = ?", (username,))
         connection.commit()
-        return True
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-        return False
         

@@ -23,7 +23,7 @@ def fetch_and_insert_data(connection):
         None
     """
 
-    response = requests.get("https://restcountries.com/v3.1/all", timeout=10)
+    response = requests.get("https://restcountries.com/v3.1/all", timeout=200)
 
     index = 1
     if response.status_code == 200:
@@ -62,23 +62,28 @@ def fetch_and_insert_data(connection):
 
                 insert_into_zwischentabelle(connection,
                                             index, id_border,
-                                            '''INSERT INTO Countries_Borders (id_country,id_border) VALUES (?,?)'''
+                                            '''INSERT INTO Countries_Borders (id_country,id_border) 
+                                            VALUES (?,?)'''
                                             )
                 insert_into_zwischentabelle(connection,
                                             index, id_capital,
-                                            '''INSERT INTO Countries_Capitals (id_country,id_capital) VALUES (?,?)'''
+                                            '''INSERT INTO Countries_Capitals 
+                                            (id_country,id_capital) VALUES (?,?)'''
                                             )
                 insert_into_zwischentabelle(connection,
                                             index, id_currency,
-                                            '''INSERT INTO Countries_Currencies (id_country,id_currency) VALUES (?,?)'''
+                                            '''INSERT INTO Countries_Currencies 
+                                            (id_country,id_currency) VALUES (?,?)'''
                                             )
                 insert_into_zwischentabelle(connection,
                                             index, id_language,
-                                            '''INSERT INTO Countries_Languages (id_country,id_language) VALUES (?,?)'''
+                                            '''INSERT INTO Countries_Languages 
+                                            (id_country,id_language) VALUES (?,?)'''
                                             )
                 insert_into_zwischentabelle(connection,
                                             index, id_continent,
-                                            '''INSERT INTO Countries_Continents (id_country,id_continent) VALUES (?,?)'''
+                                            '''INSERT INTO Countries_Continents 
+                                            (id_country,id_continent) VALUES (?,?)'''
                                             )
                 index += 1
             except requests.exceptions.RequestException as e:
@@ -130,7 +135,7 @@ def create_tables_for_country_db(connection):
         CREATE TABLE IF NOT EXISTS Currencies (
             id_currency INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE,
-            symbol TEXT UNIQUE
+            symbol TEXT
         )
         """,
         """

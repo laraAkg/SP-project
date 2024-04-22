@@ -28,35 +28,37 @@
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called {{ ', '.join(correct_country.capital) }} perched on the continent of {{
                             ', '.join(correct_country.continent) }}. The population is {{ correct_country.population }},
-                            and the land area
-                            spans _________. This country is an island in the vast ocean. The official language spoken
-                            here is {{ ','.join(correct_country.languages) }}.</p>
+                            and the land area spans {{
+                            correct_country.area
+                            }}. This country is an island in the vast ocean. The official language spoken here is {{
+                            ','.join(correct_country.languages) }}.</p>
                         {% else %}
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called {{ ', '.join(correct_country.capital) }} perched on the continent of {{
                             ', '.join(correct_country.continent) }}. The population is {{ correct_country.population }},
-                            and the land area
-                            spans _________. This country shares borders with {{ ', '.join(correct_country.borders) }}
-                            and the
+                            and the land area spans {{
+                            correct_country.area
+                            }}. This country shares borders with {{ ', '.join(correct_country.borders) }} and the
                             official language
-                            spoken here is {{ ', '.join(correct_country.languages) }}.</p>
+                            spoken here is {{ ', '.join(correct_country.languages) }}.
+                        </p>
                         {% endif %}
                         {% if correct_country.currency != "" %}
-                        <p>The currency used is {{ correct_country.currency }}.</p>
+                        <p>The currency used is _________.</p>
                         {% endif %}
                     </div>
 
-                    <form action="/quiz/area" method="post" class="quiz-options">
+                    <form action="/quiz/currency" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value={{ first_option.area }} required>
-                            <label for="option1">{{ first_option.area }}</label>
+                            <input type="radio" name="option" id="option1" value="{{ first_option.currency }}" required>
+                            <label for="option1">{{ first_option.currency }}</label>
                             </br>
-                            <input type="radio" name="option" id="option2" value={{ second_option.area }} required>
-                            <label for="option2">{{ second_option.area }}</label>
+                            <input type="radio" name="option" id="option2" value="{{ second_option.currency }}" required>
+                            <label for="option2">{{ second_option.currency }}</label>
                             </br>
-                            <input type="radio" name="option" id="option3" value={{ third_option.area }} required>
-                            <label for="option3">{{ third_option.area }}</label>
+                            <input type="radio" name="option" id="option3" value="{{ third_option.currency }}" required>
+                            <label for="option3">{{ third_option.currency }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>

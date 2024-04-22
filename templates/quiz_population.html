@@ -31,7 +31,8 @@
                             ', '.join(correct_country.continent) }}. The population is _________, and the land area
                             spans {{
                             correct_country.area
-                            }}. This country is an island in the vast ocean.</p>
+                            }}. This country is an island in the vast ocean. The official language spoken here is {{
+                            ','.join(correct_country.languages) }}.</p>
                         {% else %}
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called {{ ', '.join(correct_country.capital) }} perched on the continent of {{
@@ -42,18 +43,21 @@
                             official language
                             spoken here is {{ ', '.join(correct_country.languages) }}.</p>
                         {% endif %}
+                        {% if correct_country.currency != "" %}
+                        <p>The currency used is {{ correct_country.currency }}.</p>
+                        {% endif %}
                     </div>
 
                     <form action="/quiz/population" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value={{ first_option.population }}>
+                            <input type="radio" name="option" id="option1" value={{ first_option.population }} required>
                             <label for="option1">{{ first_option.population }}</label>
                             </br>
-                            <input type="radio" name="option" id="option2" value={{ second_option.population }}>
+                            <input type="radio" name="option" id="option2" value={{ second_option.population }} required>
                             <label for="option2">{{ second_option.population }}</label>
                             </br>
-                            <input type="radio" name="option" id="option3" value={{ third_option.population }}>
+                            <input type="radio" name="option" id="option3" value={{ third_option.population }} required>
                             <label for="option3">{{ third_option.population }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
