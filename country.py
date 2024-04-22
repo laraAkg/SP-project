@@ -1,6 +1,8 @@
 """
-Th
+Represents a country with its attributes such as official name, capital, continent, borders,
+population, area, languages, and currency.
 """
+
 
 class Country:
     """
@@ -8,7 +10,8 @@ class Country:
     population, area, and languages.
     """
 
-    def __init__(self, official_name, capital, continent, borders, population, area, languages, currency):
+    def __init__(self, official_name, capital, continent, borders, population, area,
+                 languages, currency):
         """
         Initializes a new instance of the Country class.
 
@@ -20,6 +23,7 @@ class Country:
         - population (int): The population of the country.
         - area (float): The area of the country in square kilometers.
         - languages (list): A list of languages spoken in the country.
+        - currency (str): The currency used in the country.
         """
         self.official_name = official_name
         self.capital = capital

@@ -80,22 +80,19 @@ def get_user_score(connection, username):
         print("SQLite Error:", e)
         return None
 
-def set_user_score(connection, username, ):
+def set_user_score(connection, username, score ):
     """
-    Updates the score of the specified user in the Users table.
+    Sets the score of the specified user in the Users table.
 
     Args:
         database_name (str): The name of the SQLite database.
-        username (str): The username to update the score for.
-        new_score (int): The new score to set for the user.
-
-    Returns:
-        None
+        username (str): The username to set the score for.
+        score (int): The score to set for the user.
     """
     try:
         c = connection.cursor()
-        c.execute("UPDATE Users SET score = score + 50 WHERE name = ?", (username,))
+        c.execute("INSERT INTO Users (name, score) VALUES (?, ?)", (username, score))
         connection.commit()
+        print("Score updated successfully!")
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-        

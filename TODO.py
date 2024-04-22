@@ -22,7 +22,3 @@
 # visualize data you get from countries.db to web with pandas (pandas, db, web)
 # show fun facts regarding the countries (web) maybe in a pie chart -> how many countries are in each continent
 # if no boarders -> island -> how many island vs countries in pie chart?
-
-# input user score
-# when new game then start score again from 0
-# check if date is 30 days if yes then do new api call

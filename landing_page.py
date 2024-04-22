@@ -23,7 +23,8 @@ import os
 import time
 from flask import Flask, request, render_template, redirect, session
 from user_database_operations import (insert_user, check_username_exists,
-                                      create_tables_for_user_db)
+                                      create_tables_for_user_db,
+                                      set_user_score)
 from countries_database_setup import create_tables_for_country_db, fetch_and_insert_data
 from help_services import get_random_quiz_data, return_options_for_continents
 
@@ -43,7 +44,7 @@ def render_capital_quiz_page():
     Returns:
         The rendered template for the capital quiz page.
     """
-    if 'level_up' not in session:
+    if session['status'] != 'level_up':
         session['score'] = 0
         session['status'] = 'beginner'
     country_connection = sqlite3.connect("database/countries.db")
@@ -256,10 +257,16 @@ def render_currency_quiz_page():
     session['second_option_country'] = second_option_country.currency
     session['third_option_country'] = third_option_country.currency
     session['correct_country'] = correct_country.currency
+    # If the correct country's currency is empty, redirect to the next quiz
     if correct_country.currency == "":
+        session['status'] = 'level_up'
         redirect('/quiz/capital')
     else:
-        return render_template('quiz_currency.html', first_option=first_option_country, second_option=second_option_country, third_option=third_option_country, correct_country=correct_country)
+        return render_template('quiz_currency.html',
+                               first_option=first_option_country,
+                               second_option=second_option_country,
+                               third_option=third_option_country,
+                               correct_country=correct_country)
 
 
 @app.route('/quiz/currency', methods=['POST'])
@@ -267,11 +274,13 @@ def process_currency_quiz_submission():
     """
     Process the submission of the area quiz.
 
-    This function retrieves the user's input from the form, compares it with the correct country stored in the session,
-    and redirects the user to the appropriate page based on the correctness of their answer.
+    This function retrieves the user's input from the form, compares it with the correct
+    country stored in the session, and redirects the user to the appropriate page based on
+    the correctness of their answer.
 
     Returns:
-        A redirect response to either '/quiz/population' or '/quiz/score' based on the correctness of the user's answer.
+        A redirect response to either '/quiz/population' or '/quiz/score'
+        based on the correctness of the user's answer.
     """
     user_input = request.form['option']
     correct_country_from_session = session['correct_country']
@@ -290,6 +299,7 @@ def quiz_score():
     """
     score = session['score']
     username = session['username']
+    session['status'] = 'beginner'
     print(score)
     print(username)
     return render_template('score.html')
@@ -305,7 +315,6 @@ def home():
     user_connection = sqlite3.connect("database/user.db")
     create_tables_for_user_db(user_connection)
     session.clear()
-
     if request.method == 'POST':
         username = request.form['name']
         if not re.match(r'^[a-zA-Z0-9_]{4,8}', username):
@@ -316,8 +325,21 @@ def home():
             insert_user(user_connection, username)
             session['username'] = username
             session['score'] = 0
+            session['status'] = 'beginner'
             return redirect('/quiz/capital')
     return render_template('index.html')
+
+
+@app.route('/quiz/highscore', methods=['GET'])
+def highscore():
+    """
+    Render the highscore page.
+    """
+    user_connection = sqlite3.connect("database/user.db")
+    username = session['username']
+    score = session['score']
+    set_user_score(user_connection, username, score)
+    return render_template('highscore.html', highscores=score)
 
 
 if __name__ == '__main__':
