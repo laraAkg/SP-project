@@ -22,10 +22,11 @@ import re
 import os
 import time
 from flask import Flask, request, render_template, redirect, session
-from user_database_operations import (insert_user, check_username_exists,
-                                      create_tables_for_user_db,
-                                      set_user_score)
-from countries_database_setup import create_tables_for_country_db, fetch_and_insert_data
+from database_operations.user_database_operations import (insert_user, check_username_exists,
+                                                          create_tables_for_user_db,
+                                                          set_user_score)
+from database_operations.countries_database_setup import (create_tables_for_country_db,
+                                                          fetch_and_insert_data)
 from help_services import get_random_quiz_data, return_options_for_continents
 
 app = Flask(__name__, static_folder='static')
@@ -335,11 +336,22 @@ def highscore():
     """
     Render the highscore page.
     """
-    user_connection = sqlite3.connect("database/user.db")
-    username = session['username']
-    score = session['score']
-    set_user_score(user_connection, username, score)
-    return render_template('highscore.html', highscores=score)
+    # TODO: call methode to get highscore from database (first implement the method in user_database_operations.py)
+    # a simple select by username -> username you can get in the session
+    # maybe an idea would be to display the first 10 highscores (user order by in sql query in database)
+    # and if the user score is not in top 10 then show below in which place he is (e.g. 15th)
+    # maybe show the user in which percentile he is with his score -> is this using p value? idk
+    return render_template('highscore.html')
+
+
+# create new methode that show 2-3 diagramms regarding for example biggest 10 countries etc in pychart or other chart
+# for this create new function in database with order by 
+# use her please pandas and dataframe to create the diagramms! Very important
+# maybe island vs countries in pie chart
+# decide what makes sense to display in the diagramms
+# use one of the data to calculate stuff with the p value for this you can maybe experiment with the data population and area
+# for this you are free to create a function in the help_services.py file
+# is gini even a thing in this context? maybe you can use it to calculate the p value? if not then ignore this point
 
 
 if __name__ == '__main__':

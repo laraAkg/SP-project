@@ -2,7 +2,7 @@
 This module contains helper functions for the quiz services.
 """
 import random
-from countries_database_operations import (get_random_countries,
+from database_operations.countries_database_operations import (get_random_countries,
                                            return_three_different_continents,
                                            get_country_by_continent_id)
 

@@ -1,24 +1,27 @@
-# increase user highscore points depending on how he managed to answer the quiz
-# have a leaderboard with some graphics
-# end of quiz show statistical data like -> gini table maybe Balkendiagramm wo am meisten länder etc (first clarify what to show)
-# (langugages map to country)
-# Important: at the end both will have knowledge about reading/writing to a database, using a REST API, and creating a web application with Flask.
-# Procedure will be same -> think what data is needed for example population, get population from db, calculate what you need and pass it to flask
-
-
 # setup docker
 # maybe gitignore, the database
 # setup requirements.txt?
 # update README.md
+# add a ERD diagram picture to the README.md
 
 
+# Minimum requirement for the project work (max. 8 points):
+# The project must be a Scientific Programming (SP) project, i.e., based on the content of the SP module. - DONE
+# The project must integrate several topics presented in the module, at a minimum these are the following: 
+# (1) Collection of real-world data - DONE
+# (2) Data preparation (e.g. strings to numerical using regular expressions) - DONE? check with the tutor
+# (3) Use of Python built-in data structures (lists, dictionaries, sets, tuples) and pandas data frames - DONE-> (all??)
+# (4) Use of conditional statements, loop control statements and loops - DONE
+# (5) Use of procedural programming or object-oriented programming (one of these or both) - DONE
+# (6) Use of tables, vizualizations/graphics for data exploration - In progress
+# (7) Integration of a statistical analyses (e.g. correlation analysis, statistical test); must contain a p-value. - In progress
+# (8) Making the data, Python code, Jupyter notebooks, etc. available on Moodle - In progress
 
 
-# person 1 -> get data from users.db for example getUserHighscore (DB) (select/ insert) -> if possible calculate here the top idk 10 (Order By DESC)
-# visualize data you get from getUserHighscore to web top 10 highscore (maybe with pandas?)
-# show highscore in a table on website (web)
-
-# person 2 
-# visualize data you get from countries.db to web with pandas (pandas, db, web)
-# show fun facts regarding the countries (web) maybe in a pie chart -> how many countries are in each continent
-# if no boarders -> island -> how many island vs countries in pie chart?
+# Additional points for the project work if the following is met (max 6 points):
+# (1) Creativity of implementation (creative is everything which was not part of the lessons and exercises) - DONE
+# (2) Use of a Web Scraper or Web API to collect data (must be part of the Python programming code)  - DONE
+# (3) Use of a database (e.g. SQLite, PostgreSQL) and SQL-queries (must be part of the Python programming code) - DONE
+# (4) Use of Docker or a cloud service (e.g. Amazon EC2, Amazon Sagemaker, Azure Machine Learning studio) - In progress
+# (5) Creation of a simple web application to present data and analysis results - In progress (first part done, analysis results pending)
+# (6) Making the Python code/Jupyter notebooks publicly available in a GitHub repo (exclude large data sets using .gitignore) - DONE
