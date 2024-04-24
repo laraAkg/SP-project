@@ -23,8 +23,7 @@ import os
 import time
 from flask import Flask, request, render_template, redirect, session
 from database_operations.user_database_operations import (insert_user, check_username_exists,
-                                                          create_tables_for_user_db,
-                                                          set_user_score)
+                                                          create_tables_for_user_db)
 from database_operations.countries_database_setup import (create_tables_for_country_db,
                                                           fetch_and_insert_data)
 from help_services import get_random_quiz_data, return_options_for_continents
@@ -345,13 +344,11 @@ def highscore():
 
 
 # create new methode that show 2-3 diagramms regarding for example biggest 10 countries etc in pychart or other chart
-# for this create new function in database with order by 
-# use her please pandas and dataframe to create the diagramms! Very important
+# for this create new function in database with order by -> check db comments call
+# call your function in your helper file
 # maybe island vs countries in pie chart
 # decide what makes sense to display in the diagramms
 # use one of the data to calculate stuff with the p value for this you can maybe experiment with the data population and area
-# for this you are free to create a function in the help_services.py file
-# is gini even a thing in this context? maybe you can use it to calculate the p value? if not then ignore this point
 
 
 if __name__ == '__main__':

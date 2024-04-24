@@ -25,3 +25,6 @@
 # (4) Use of Docker or a cloud service (e.g. Amazon EC2, Amazon Sagemaker, Azure Machine Learning studio) - In progress
 # (5) Creation of a simple web application to present data and analysis results - In progress (first part done, analysis results pending)
 # (6) Making the Python code/Jupyter notebooks publicly available in a GitHub repo (exclude large data sets using .gitignore) - DONE
+
+
+# Lara: create new User object like country :) 

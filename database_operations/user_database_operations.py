@@ -61,26 +61,6 @@ def check_username_exists(connection, username):
         return False
 
 
-def get_user_score(connection, username):
-    """
-    Retrieves the score of the specified user from the Users table.
-
-    Args:
-        database_name (str): The name of the SQLite database.
-        username (str): The username to retrieve the score for.
-
-    Returns:
-        int: The score of the user.
-    """
-    try:
-        c = connection.cursor()
-        c.execute("SELECT score FROM Users WHERE name = ?", (username,))
-        result = c.fetchone()
-        return result
-    except sqlite3.Error as e:
-        print("SQLite Error:", e)
-        return None
-
 def set_user_score(connection, username, score ):
     """
     Sets the score of the specified user in the Users table.
@@ -97,3 +77,16 @@ def set_user_score(connection, username, score ):
         print("Score updated successfully!")
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+
+
+########################################################################################
+
+# edon
+# write here a def to get the score from the db depending on the username
+# def get_score_by_username(connection, username):
+# please return here score, place, and username
+
+
+# write here a def to get top 10 score from the db
+# def get_top_ten_score(connection, username):
+# please return here list with (score, place, and username)

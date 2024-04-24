@@ -556,3 +556,14 @@ def get_country_by_continent_id(connection, continent_id):
         return Country(result[1], capital, result[5], borders, result[4], result[3], languages, currency)
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+
+########################################################################################
+
+# Toni
+# write here a function that for example returns you countries per continents
+# def get_countries_per_continents(connection):
+# result should be like asia 100 countries etc -> important use here order by and you can return it into a
+# list so in visual_helper.py you can call this function and it returns you a map [asia:100,europa:60,] -> key value
+# important you need to use the zwischentabelle
+
+########################################################################################
