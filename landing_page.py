@@ -318,8 +318,8 @@ def home():
     session.clear()
     if request.method == 'POST':
         username = request.form['name']
-        if not re.match(r'^[a-zA-Z0-9_]{4,8}', username):
-            return render_template('index.html', message="Invalid username! Username must be 4-8 characters long and can only contain letters, numbers, and underscores.")
+        if not re.match(r'^[a-zA-Z0-9]{4,12}$', username):
+            return render_template('index.html', message="Invalid username! Username must be 4-12 characters long and can only contain letters and numbers.")
         if check_username_exists(user_connection, username):
             return render_template('index.html', message="User already exists!")
         else:

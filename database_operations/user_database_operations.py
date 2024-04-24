@@ -15,10 +15,11 @@ def create_tables_for_user_db(connection):
     """
     try:
         c = connection.cursor()
-        c.execute('''CREATE TABLE IF NOT EXISTS Users (
+        query = '''CREATE TABLE IF NOT EXISTS Users (
                             user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name TEXT UNIQUE NOT NULL,
-                            score INTEGER DEFAULT 0)''')
+                            score INTEGER DEFAULT 0)'''
+        c.execute(query)
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
