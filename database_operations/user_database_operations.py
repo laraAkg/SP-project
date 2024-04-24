@@ -84,9 +84,9 @@ def set_user_score(connection, username, score ):
 # edon
 # write here a def to get the score from the db depending on the username
 # def get_score_by_username(connection, username):
-# please return here score, place, and username
+# please return here User object with score, place, and username (siehe line 556 in countries_database_operations)
 
 
 # write here a def to get top 10 score from the db
 # def get_top_ten_score(connection, username):
-# please return here list with (score, place, and username)
+# please return here List of all User object with score, place, and username (siehe line 556 in countries_database_operations)
