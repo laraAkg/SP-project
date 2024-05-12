@@ -557,13 +557,83 @@ def get_country_by_continent_id(connection, continent_id):
     except sqlite3.Error as e:
         print("SQLite Error:", e)
 
-########################################################################################
 
-# Toni
-# write here a function that for example returns you countries per continents
-# def get_countries_per_continents(connection):
-# result should be like asia 100 countries etc -> important use here order by and you can return it into a
-# list so in visual_helper.py you can call this function and it returns you a map [asia:100,europa:60,] -> key value
-# important you need to use the zwischentabelle
+def get_top_five_largest_countries(connection):
+    """
+    Retrieves the top five largest countries from the database.
 
-########################################################################################
+    Args:
+        connection: The database connection object.
+
+    Returns:
+        A list of tuples containing the country name and area of the top five largest countries.
+    """
+    try:
+        select_query = '''
+        SELECT * FROM countries ORDER BY area DESC LIMIT 5
+        '''
+        cursor = connection.cursor()
+        cursor.execute(select_query)
+        results = cursor.fetchall()
+
+        countries = []
+        for result in results:
+            country_name = result[1]
+            country_area = result[3]
+            countries.append((country_name, country_area))
+        return countries
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+
+
+def get_top_five_population_countries(connection):
+    """
+    Retrieves the top five most populous countries from the database.
+
+    Args:
+        connection: The database connection object.
+
+    Returns:
+        A list of tuples containing the country name and population of the top five most populous countries.
+    """
+    try:
+        select_query = '''
+        SELECT * FROM countries ORDER BY population DESC LIMIT 5
+        '''
+        cursor = connection.cursor()
+        cursor.execute(select_query)
+        results = cursor.fetchall()
+
+        countries = []
+        for result in results:
+            country_name = result[1]
+            country_population = result[4]
+            countries.append((country_name, country_population))
+        return countries
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)
+
+def get_countries_count_per_continent(connection):
+    """
+    Returns the count of countries per continent from the 'Continents' table in the SQLite database.
+
+    Args:
+        connection (sqlite3.Connection): The connection object to the SQLite database.
+
+    Returns:
+        dict: A dictionary where the keys are continent names and the values are the count of countries.
+    """
+    cursor = connection.cursor()
+    try:
+        cursor.execute(
+            "SELECT continent_name, COUNT(*) FROM Continents GROUP BY continent_name")
+        results = cursor.fetchall()
+
+        countries_count_per_continent = {}
+        for result in results:
+            continent_name, count = result
+            countries_count_per_continent[continent_name] = count
+
+        return countries_count_per_continent
+    except sqlite3.Error as e:
+        print("SQLite Error:", e)

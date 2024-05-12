@@ -21,12 +21,16 @@ import sqlite3
 import re
 import os
 import time
+import matplotlib.pyplot as plt
+import io
+import base64
 from flask import Flask, request, render_template, redirect, session
 from database_operations.user_database_operations import (insert_user, check_username_exists,
                                                           create_tables_for_user_db)
 from database_operations.countries_database_setup import (create_tables_for_country_db,
                                                           fetch_and_insert_data)
 from help_services import get_random_quiz_data, return_options_for_continents
+from visual_helper import (plot_top_five_largest_countries, plot_top_five_population_countries)
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'BAD_SECRET_KEY'
@@ -342,6 +346,15 @@ def highscore():
     # maybe show the user in which percentile he is with his score -> is this using p value? idk
     return render_template('highscore.html')
 
+@app.route('/quiz/diagrams', methods=['GET'])
+def diagrams():
+    country_connection = sqlite3.connect("database/countries.db")
+    plot_top_five_largest_countries(country_connection)
+    plot_top_five_population_countries(country_connection)
+    return render_template('diagrams.html')
+
+
+
 
 # create new methode that show 2-3 diagramms regarding for example biggest 10 countries etc in pychart or other chart
 # for this create new function in database with order by -> check db comments call
@@ -349,7 +362,6 @@ def highscore():
 # maybe island vs countries in pie chart
 # decide what makes sense to display in the diagramms
 # use one of the data to calculate stuff with the p value for this you can maybe experiment with the data population and area
-
 
 if __name__ == '__main__':
     COUNTRY_DB_PATH = "database/countries.db"
