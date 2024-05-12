@@ -348,6 +348,10 @@ def highscore():
 
 @app.route('/quiz/diagrams', methods=['GET'])
 def diagrams():
+
+
+
+    
     country_connection = sqlite3.connect("database/countries.db")
     plot_top_five_largest_countries(country_connection)
     plot_top_five_population_countries(country_connection)
