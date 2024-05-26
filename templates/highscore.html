@@ -1,9 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Highscore</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page and Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
+
 <body>
-    <h1>Highscore: <span id="highscore">0</span></h1>
+    <header class="bg-primary py-4">
+        <div class="container text-center">
+            <h1 class="text-white">Highscores</h1>
+        </div>
+    </header>
+    <main class="container my-5">
+        <div>
+            <h1>Top 10:</h1>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rank, user in enumerate(top_ten, start=1) %}
+                    <tr>
+                        <td>{{ rank }}</td>
+                        <td>{{ user['username'] }}</td>
+                        <td>{{ user['score'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if user_rank_text != 0 %}
+        <p>Your rank: {{ user_rank_text }}</p>
+        {% endif %}
+        <a href="/" class="btn btn-secondary">Start again</a>
+    </main>
 </body>
+
 </html>

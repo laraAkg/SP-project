@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 
 <body>
     <header class="bg-primary py-4">
         <div class="container text-center">
-            <h1 class="text-white">World wide quiz</h1>
+            <h1 class="text-white">World Wide Quiz</h1>
         </div>
     </header>
 
@@ -19,7 +20,7 @@
         <div class="quiz-content d-flex justify-content-center align-items-center">
             <div class="container text-center">
                 <h1>Welcome to the Quiz!</h1>
-                <p>Let's test your knowledge about countries around the world</p>
+                <p>Let's test your knowledge about countries around the world.</p>
 
                 <div class="card p-4 rounded shadow-sm mt-4">
                     <div class="quiz-question">
@@ -28,20 +29,17 @@
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called {{ ', '.join(correct_country.capital) }} perched on the continent of {{
                             ', '.join(correct_country.continent) }}. The population is {{ correct_country.population }},
-                            and the land area
-                            spans _________. This country is an island in the vast ocean. The official language spoken
-                            here is {{ ','.join(correct_country.languages) }}.</p>
+                            and the land area spans _________. This country is an island in the vast ocean. The official
+                            language spoken here is {{ ','.join(correct_country.languages) }}.</p>
                         {% else %}
                         <p>In a distant land, the official name of which is {{ correct_country.official_name }}, lies a
                             capital city called {{ ', '.join(correct_country.capital) }} perched on the continent of {{
                             ', '.join(correct_country.continent) }}. The population is {{ correct_country.population }},
-                            and the land area
-                            spans _________. This country shares borders with {{ ', '.join(correct_country.borders) }}
-                            and the
-                            official language
-                            spoken here is {{ ', '.join(correct_country.languages) }}.</p>
+                            and the land area spans _________. This country shares borders with {{
+                            ', '.join(correct_country.borders) }} and the official language spoken here is {{
+                            ', '.join(correct_country.languages) }}.</p>
                         {% endif %}
-                        {% if correct_country.currency != "" %}
+                        {% if correct_country.currency %}
                         <p>The currency used is {{ correct_country.currency }}.</p>
                         {% endif %}
                     </div>
@@ -49,13 +47,13 @@
                     <form action="/quiz/area" method="post" class="quiz-options">
                         <div>
                             <h2>Options:</h2>
-                            <input type="radio" name="option" id="option1" value={{ first_option.area }} required>
+                            <input type="radio" name="option" id="option1" value="{{ first_option.area }}" required>
                             <label for="option1">{{ first_option.area }}</label>
-                            </br>
-                            <input type="radio" name="option" id="option2" value={{ second_option.area }} required>
+                            <br>
+                            <input type="radio" name="option" id="option2" value="{{ second_option.area }}" required>
                             <label for="option2">{{ second_option.area }}</label>
-                            </br>
-                            <input type="radio" name="option" id="option3" value={{ third_option.area }} required>
+                            <br>
+                            <input type="radio" name="option" id="option3" value="{{ third_option.area }}" required>
                             <label for="option3">{{ third_option.area }}</label>
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
@@ -64,9 +62,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

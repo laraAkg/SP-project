@@ -1,5 +1,2 @@
 /__pycache__
-/example.db
-/selectCountry.py
-/test.ipynb
-/test_DBconnection.py
+/user.db

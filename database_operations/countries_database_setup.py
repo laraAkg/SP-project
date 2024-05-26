@@ -22,75 +22,85 @@ def fetch_and_insert_data(connection):
     Returns:
         None
     """
+    try:
+        response = requests.get(
+            "https://restcountries.com/v3.1/all",
+            timeout=200)
+        if response.status_code == 200:
+            countries = response.json()
+            for index, country in enumerate(countries, start=1):
+                try:
+                    country_data = {
+                        'name': country['name']['official'],
+                        'code': country['cca2'],
+                        'area': country['area'],
+                        'population': country['population'],
+                    }
+                    insert_countries_data_to_db(
+                        connection, country_data, index)
 
-    response = requests.get("https://restcountries.com/v3.1/all", timeout=200)
+                    capital = country.get(
+                        'capital', {
+                            'noCapital': 'No Capital Found'})
+                    id_capital = insert_country_data_capital(
+                        connection, capital)
 
-    index = 1
-    if response.status_code == 200:
-        countries = response.json()
-        for country in countries:
-            try:
-                country_data = {
-                    'name': country['name']['official'],
-                    'code': country['cca2'],
-                    'area': country['area'],
-                    'population': country['population'],
-                }
-                insert_countries_data_to_db(connection, country_data, index)
+                    continents = country.get(
+                        'continents', {
+                            'noContinent': 'No Continent Found'})
+                    id_continent = insert_country_data_continent(
+                        connection, continents)
 
-                capital = country.get(
-                    'capital', {'noCapital': 'No Capital Found'})
-                id_capital = insert_country_data_capital(connection, capital)
+                    languages = country.get(
+                        'languages', {
+                            'noLang': 'No Language Found'})
+                    id_language = insert_country_data_language(
+                        connection, languages)
 
-                continents = country.get(
-                    'continents', {'noContinent': 'No Continent Found'})
-                id_continent = insert_country_data_continent(
-                    connection, continents)
+                    borders = country.get('borders', {'island': 'Island'})
+                    id_border = insert_country_data_borders(
+                        connection, borders)
 
-                languages = country.get(
-                    'languages', {'noLang': 'No Language Found'})
-                id_language = insert_country_data_language(
-                    connection, languages)
+                    currencies = country.get(
+                        'currencies', {
+                            'NoCurr': {
+                                'name': 'No currency', 'symbol': 'No symbol'}})
+                    id_currency = insert_country_data_currencies(
+                        connection, currencies)
 
-                borders = country.get('borders', {'island': 'Island'})
-                id_border = insert_country_data_borders(connection, borders)
-
-                currencies = country.get(
-                    'currencies', {'NoCurr': {'name': 'No currency', 'symbol': 'No symbol'}})
-                id_currency = insert_country_data_currencies(
-                    connection, currencies)
-
-                insert_into_zwischentabelle(connection,
-                                            index, id_border,
-                                            '''INSERT INTO Countries_Borders (id_country,id_border) 
-                                            VALUES (?,?)'''
-                                            )
-                insert_into_zwischentabelle(connection,
-                                            index, id_capital,
-                                            '''INSERT INTO Countries_Capitals 
-                                            (id_country,id_capital) VALUES (?,?)'''
-                                            )
-                insert_into_zwischentabelle(connection,
-                                            index, id_currency,
-                                            '''INSERT INTO Countries_Currencies 
-                                            (id_country,id_currency) VALUES (?,?)'''
-                                            )
-                insert_into_zwischentabelle(connection,
-                                            index, id_language,
-                                            '''INSERT INTO Countries_Languages 
-                                            (id_country,id_language) VALUES (?,?)'''
-                                            )
-                insert_into_zwischentabelle(connection,
-                                            index, id_continent,
-                                            '''INSERT INTO Countries_Continents 
-                                            (id_country,id_continent) VALUES (?,?)'''
-                                            )
-                index += 1
-            except requests.exceptions.RequestException as e:
-                print("Error in loading:", str(e))
-                continue
-    else:
-        print("Error in fetching data!")
+                    # Inserting into zwischentabelle
+                    insert_into_zwischentabelle(
+                        connection,
+                        index,
+                        id_border,
+                        '''INSERT INTO Countries_Borders (id_country,id_border) VALUES (?,?)''')
+                    insert_into_zwischentabelle(
+                        connection,
+                        index,
+                        id_capital,
+                        '''INSERT INTO Countries_Capitals (id_country,id_capital) VALUES (?,?)''')
+                    insert_into_zwischentabelle(
+                        connection,
+                        index,
+                        id_currency,
+                        '''INSERT INTO Countries_Currencies (id_country,id_currency) VALUES (?,?)''')
+                    insert_into_zwischentabelle(
+                        connection,
+                        index,
+                        id_language,
+                        '''INSERT INTO Countries_Languages (id_country,id_language) VALUES (?,?)''')
+                    insert_into_zwischentabelle(
+                        connection,
+                        index,
+                        id_continent,
+                        '''INSERT INTO Countries_Continents (id_country,id_continent) VALUES (?,?)''')
+                except requests.exceptions.RequestException as e:
+                    print("Error in loading:", str(e))
+                    continue
+        else:
+            print("Error in fetching data!")
+    except requests.exceptions.RequestException as e:
+        print("Error in fetching data:", str(e))
 
 
 def create_tables_for_country_db(connection):

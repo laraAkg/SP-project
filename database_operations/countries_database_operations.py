@@ -42,16 +42,23 @@ def insert_countries_data_to_db(connection, country_data, index):
 def get_countries_count(connection):
     """
     Returns the number of countries in the 'Countries' table of the SQLite database.
+    
+    Args:
+        connection: The database connection object.
+
+    Returns:
+        int: The number of countries in the database.
     """
     cursor = connection.cursor()
     try:
         select_query = '''SELECT COUNT(*) FROM Countries'''
         cursor.execute(select_query)
         count = cursor.fetchone()[0]
-        print("Number of countries in the database:", count)
         return count
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return -1  # Return a default value or raise an exception to handle errors
+
 
 
 def insert_into_zwischentabelle(connection, country_id, second_id, query):
@@ -67,7 +74,7 @@ def insert_into_zwischentabelle(connection, country_id, second_id, query):
         print("SQLite Error: ", e)
 
 
-########################################################################################
+##########################################################################
 # The following functions are used to insert data into the database.
 
 def insert_country_data_language(connection, data):
@@ -228,7 +235,7 @@ def insert_country_data_currencies(connection, currencies):
         print("SQLite Error:", e)
     return list_id
 
-########################################################################################
+##########################################################################
 # The following functions are used to retrieve data from the database.
 
 
@@ -256,10 +263,10 @@ def return_country_data_official_name(connection, country_id):
         official_name = cursor.fetchone()[0]
         if official_name:
             return official_name
-        else:
-            return "No official name"
+        return "No official name"
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return None
 
 
 def return_country_data_capital(connection, country_id):
@@ -289,7 +296,7 @@ def return_country_data_capital(connection, country_id):
         return capitals
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-
+        return None
 
 def return_country_data_continent(connection, country_id):
     """
@@ -318,7 +325,7 @@ def return_country_data_continent(connection, country_id):
         return continents
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-
+        return None
 
 def return_country_data_borders(connection, country_id):
     """
@@ -347,7 +354,7 @@ def return_country_data_borders(connection, country_id):
         return borders
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-
+        return None
 
 def return_country_data_population(connection, country_id):
     """
@@ -373,7 +380,7 @@ def return_country_data_population(connection, country_id):
         return population
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-
+        return None
 
 def return_country_data_area(connection, country_id):
     """
@@ -398,7 +405,7 @@ def return_country_data_area(connection, country_id):
         return int(area)
     except sqlite3.Error as e:
         print("SQLite Error:", e)
-
+        return None
 
 def return_country_data_languages(connection, country_id):
     """
@@ -427,6 +434,7 @@ def return_country_data_languages(connection, country_id):
         return languages
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return []
 
 
 def return_country_data_currency(connection, country_id):
@@ -458,6 +466,7 @@ def return_country_data_currency(connection, country_id):
         return currencies_string
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return None
 
 
 def return_three_different_continents(connection):
@@ -484,8 +493,9 @@ def return_three_different_continents(connection):
         return continents
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return []
 
-########################################################################################
+##########################################################################
 
 
 def get_random_countries(connection):
@@ -553,9 +563,18 @@ def get_country_by_continent_id(connection, continent_id):
         languages = return_country_data_languages(connection, result[0])
         currency = return_country_data_currency(connection, result[0])
 
-        return Country(result[1], capital, result[5], borders, result[4], result[3], languages, currency)
+        return Country(
+            result[1],
+            capital,
+            result[5],
+            borders,
+            result[4],
+            result[3],
+            languages,
+            currency)
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return None
 
 
 def get_top_five_largest_countries(connection):
@@ -584,6 +603,7 @@ def get_top_five_largest_countries(connection):
         return countries
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return []
 
 
 def get_top_five_population_countries(connection):
@@ -594,7 +614,8 @@ def get_top_five_population_countries(connection):
         connection: The database connection object.
 
     Returns:
-        A list of tuples containing the country name and population of the top five most populous countries.
+        A list of tuples containing the country name and population of the
+        top five most populous countries.
     """
     try:
         select_query = '''
@@ -612,28 +633,60 @@ def get_top_five_population_countries(connection):
         return countries
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return []
 
-def get_countries_count_per_continent(connection):
+
+def get_countries_by_continent(connection):
     """
-    Returns the count of countries per continent from the 'Continents' table in the SQLite database.
+    Retrieve the count of countries grouped by continent from the database.
 
     Args:
-        connection (sqlite3.Connection): The connection object to the SQLite database.
+        connection: The database connection object.
 
     Returns:
-        dict: A dictionary where the keys are continent names and the values are the count of countries.
+        A dictionary where keys are continents and values are counts of countries in each continent.
     """
-    cursor = connection.cursor()
     try:
-        cursor.execute(
-            "SELECT continent_name, COUNT(*) FROM Continents GROUP BY continent_name")
+        query = """
+        SELECT Continents.continent, COUNT(Countries.id_country) AS country_count
+        FROM Continents
+        JOIN Countries_Continents ON Continents.id_continent = Countries_Continents.id_continent
+        JOIN Countries ON Countries_Continents.id_country = Countries.id_country
+        GROUP BY Continents.continent
+        """
+        cursor = connection.cursor()
+        cursor.execute(query)
         results = cursor.fetchall()
+        return dict(results)
+    except sqlite3.Error as e:
+        print("Error executing SQLite query:", e)
+        return {}
 
-        countries_count_per_continent = {}
-        for result in results:
-            continent_name, count = result
-            countries_count_per_continent[continent_name] = count
 
-        return countries_count_per_continent
+def get_continent_area_and_population_by_id(connection):
+    """
+    Retrieves the area and population data for all countries from the 'Countries'
+    table in the database.
+
+    Args:
+        connection: The connection object to the SQLite database.
+
+    Returns:
+        A list of density values calculated as population divided by area.
+    """
+    try:
+        select_query = '''
+        SELECT area, population
+        FROM Countries
+        '''
+        cursor = connection.cursor()
+        cursor.execute(select_query)
+        result = cursor.fetchall()
+        density_data = []
+        for row in result:
+            density = row[1] / row[0]
+            density_data.append(density)
+        return density_data
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+        return []
