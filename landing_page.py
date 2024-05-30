@@ -327,4 +327,5 @@ if __name__ == '__main__':
         create_tables_for_country_db(country_connection)
         fetch_and_insert_data(country_connection)
         print("Data fetched and inserted into the database.")
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0', port=80,)
+    
