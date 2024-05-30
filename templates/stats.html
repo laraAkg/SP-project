@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population Density Analysis</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<header class="bg-primary py-4">
+    <div class="container text-center">
+        <h1 class="text-white">Statistics</h1>
+    </div>
+</header>
+
+<body>
+
+    <div class="container">
+        <div class="image-container">
+            <h1>Correlation between area and population: </h1>
+            <h1>{{ corr_coeff }}</h1>
+            <img src="/static/diagrams/CorrelationAreaPopulation.png" alt="CorrelationAreaPopulation">
+            <p class="info-text">This diagram represents the correlation between area and population of the 250
+                countries</p>
+            <br>
+            <p>The Pearson correlation coefficient (r) measures the strength and direction of the linear relationship
+                between two variables. It ranges from -1 to +1, where:</p>
+            <ul>
+                <li>r = 1: Perfect positive correlation</li>
+                <li>r = -1: Perfect negative correlation</li>
+                <li>r = 0: No correlation</li>
+            </ul>
+        </div>
+
+        <div class="image-container">
+            <h1>Correlation Analysis: </h1>
+            <h2>Land Area and Population</h2>
+            <br>
+            <p>This analysis aims to determine if there is a significant correlation between the land area and
+                population of 250 countries.</p>
+            <p>The hypothesis test uses a significance level of 0.05. If the calculated p-value is less than 0.05, the
+                null hypothesis is rejected, indicating a significant correlation between area and population.
+            </p>
+            <p>Additionally, the p-value indicates the probability of observing the data if the null hypothesis (no
+                correlation) is true. A small p-value suggests that the observed correlation is unlikely to be due to
+                random chance, providing evidence against the null hypothesis.</p>
+            <br>
+            <i>The null hypothesis (H0) in this hypothesis test is that there is no significant correlation between the
+                area and population of the countries.</i>
+            <br>
+            <b>The p-value is: {{ p_value }}</b>
+            <b>{{ hypothesis_test }}</b>
+        </div>
+    </div>
+</body>
+
+</html>

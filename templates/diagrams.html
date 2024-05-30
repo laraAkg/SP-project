@@ -1,38 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two Images Side by Side</title>
-    <style>
-        .container {
-            display: flex;
-            justify-content: center;
-        }
+    <title>Diagrams</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        .image-container {
-            margin: 10px;
-        }
-
-        .image-container img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: auto;
-        }
-    </style>
 </head>
-
+ 
 <body>
+    <header class="bg-primary py-4">
+        <div class="container text-center">
+            <h1 class="text-white">Diagrams</h1>
+        </div>
+    </header>
+
     <div class="container">
         <div class="image-container">
-            <img src="\static\diagrams\topfiveareacountry.png" alt="Image 1">
+            <img src="\static\diagrams\topfiveareacountry.png" alt="topfiveareacountry">
+            <p class="info-text">This data represents only the percentage between the top five largest countries by area.</p>
         </div>
         <div class="image-container">
-            <img src="\static\diagrams\topfivepopulationcountry.png" alt="Image 2">
+            <img src="\static\diagrams\topfivepopulationcountry.png" alt="topfivepopulationcountry">
+            <p class="info-text">This data represents only the percentage between the top five largest countries by population.</p>
         </div>
     </div>
 </body>
-
+ 
 </html>

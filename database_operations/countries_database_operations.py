@@ -661,16 +661,14 @@ def get_countries_by_continent(connection):
     except sqlite3.Error as e:
         print("Error executing SQLite query:", e)
         return {}
-
-
+ 
 def get_continent_area_and_population_by_id(connection):
     """
-    Retrieves the area and population data for all countries from the 'Countries'
-    table in the database.
-
+    Retrieves the area and population data for all countries from the 'Countries' table in the database.
+ 
     Args:
         connection: The connection object to the SQLite database.
-
+ 
     Returns:
         A list of density values calculated as population divided by area.
     """
@@ -689,4 +687,41 @@ def get_continent_area_and_population_by_id(connection):
         return density_data
     except sqlite3.Error as e:
         print("SQLite Error:", e)
+ 
+def get_all_areas(connection):
+    """
+    Retrieves the area data for all countries from the 'Countries' table in the database.
+
+    Args:
+        connection: The connection object to the SQLite database.
+
+    Returns:
+        A list of area values for all countries.
+    """
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT area FROM Countries")
+        areas = [row[0] for row in cursor.fetchall()]
+        return areas
+    except sqlite3.Error as e:
+        print(f"Error retrieving areas: {e}")
+        return []
+
+def get_all_population(connection):
+    """
+    Retrieves the population data for all countries from the 'Countries' table in the database.
+
+    Args:
+        connection: The connection object to the SQLite database.
+
+    Returns:
+        A list of population values for all countries.
+    """
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT population FROM Countries")
+        population = [row[0] for row in cursor.fetchall()]
+        return population
+    except sqlite3.Error as e:
+        print(f"Error retrieving population: {e}")
         return []

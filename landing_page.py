@@ -22,12 +22,13 @@ from database_operations.user_database_operations import (
     get_top_ten_score, set_user_score)
 from help_services import get_random_quiz_data, return_options_for_continents
 from visual_helper import (
-    plot_top_five_largest_countries, plot_top_five_population_countries)
+    plot_top_five_largest_countries, plot_top_five_population_countries, hypothesis_test, get_correlation_coefficient)
 
 matplotlib.use('Agg')
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'BAD_SECRET_KEY'
+
 
 @app.route('/quiz/capital', methods=['GET'])
 def render_capital_quiz_page():
@@ -182,6 +183,7 @@ def process_area_quiz_submission():
         return redirect('/quiz/currency')
     return redirect('/quiz/score')
 
+
 @app.route('/quiz/currency', methods=['GET'])
 def render_currency_quiz_page():
     """
@@ -201,10 +203,10 @@ def render_currency_quiz_page():
         session['status'] = 'level_up'
         return redirect('/quiz/capital')
     return render_template('quiz_currency.html',
-                            first_option=first_country,
-                            second_option=second_country,
-                            third_option=third_country,
-                            correct_country=correct_country)
+                           first_option=first_country,
+                           second_option=second_country,
+                           third_option=third_country,
+                           correct_country=correct_country)
 
 
 @app.route('/quiz/currency', methods=['POST'])
@@ -301,6 +303,20 @@ def diagrams():
     return render_template('diagrams.html')
 
 
+@app.route('/quiz/stats', methods=['GET'])
+def stats():
+    """
+    Retrieves continent area and population data from the database and renders the 'stats.html' template.
+
+    Returns:
+        The rendered template with the retrieved data passed to the context.
+    """
+    connection = sqlite3.connect("database/countries.db")
+    corr_coeff = get_correlation_coefficient(connection)
+    hypothesis = hypothesis_test(connection)
+    return render_template('stats.html', corr_coeff=corr_coeff.correlation, hypothesis_test=hypothesis, p_value=corr_coeff.pvalue)
+
+
 if __name__ == '__main__':
     COUNTRY_DB_PATH = "database/countries.db"
     THIRTY_DAYS = 30 * 24 * 60 * 60
@@ -312,4 +328,3 @@ if __name__ == '__main__':
         fetch_and_insert_data(country_connection)
         print("Data fetched and inserted into the database.")
     app.run(debug=True)
-    
