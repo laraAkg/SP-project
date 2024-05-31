@@ -35,16 +35,16 @@ docker pull lara283/flask-app
 docker run -d -p 80:80 lara283/flask-app
 
 3. Access the Application:
-Open http://localhost in your web browser to access the application.
+Open http://localhost in your web browser to access the application
 
 **Instructions for Using the Application via Docker Desktop:**
-1. Launch Docker Desktop on your local computer.
-2. Search for the Docker image lara283/flask-app on Docker Hub.
-3. Click on the desired image and select "Pull".
-4. Click on the downloaded image and select "Run".
+1. Launch Docker Desktop on your local computer
+2. Search for the Docker image lara283/flask-app on Docker Hub
+3. Click on the desired image and select "Pull"
+4. Click on the downloaded image and select "Run"
 5. Click on Optional settings and set Host port to 80
 6. Click on Run
-7. Open http://localhost in your web browser to access the application.
+7. Open http://localhost in your web browser to access the application
 8. Enter your Username and chase the highscore!
 
 ### country_code_data_utils.ipynb
