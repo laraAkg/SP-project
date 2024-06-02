@@ -20,9 +20,6 @@ Main Features:
 
 So buckle up, fellow adventurer! It's time to embark on a journey of knowledge, laughter, and maybe a few eyebrow-raising moments. Let's make learning about the world as fun as a rollercoaster ride! 🎢
 
-## Installation
-
-[Provide detailed steps on how to install your project. Include any prerequisites, dependencies, or setup instructions.]
 
 ## Usage
 
@@ -47,15 +44,3 @@ Open http://localhost in your web browser to access the application
 7. Open http://localhost in your web browser to access the application
 8. Enter your Username and chase the highscore!
 
-### country_code_data_utils.ipynb
-
-The **`country_code_data_utils.ipynb`** notebook is a crucial component responsible for fetching, processing, and storing country code data retrieved from the XY API. This API supplies a list of countries, each identified by a unique code (e.g., 'CH' for Switzerland), which we store in our database for future reference.
-
-#### Instructions:
-
-
-3. **Fetching and Processing Data**: Once the 'drop table' code is commented again, run all cells to fetch and process the new data. Ensure all cells execute successfully.
-
-#### Notes:
-- The data processed within this notebook is utilized in other sections of the application, making its accurate processing crucial.
-- Regularly check for updates from the XY API to ensure the database remains current.
